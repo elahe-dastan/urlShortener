@@ -3,7 +3,7 @@ package KGS
 import "urlShortener/models"
 
 // it should be 8 but for simplicty I put it 2
-const Length  =  2
+const LengthOfShortURL  =  2
 
 const source  = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
@@ -22,7 +22,7 @@ func GenerateAllRandomShortURLsRec(prefix string,k int )  {
 }
 
 func GenerateAllRandomShortURLs()  []models.RandomShortURL{
-	GenerateAllRandomShortURLsRec("", Length)
+	GenerateAllRandomShortURLsRec("", LengthOfShortURL)
 	return randomShortURLs
 }
 

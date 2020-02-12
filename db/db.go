@@ -7,9 +7,16 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"os"
 	"urlShortener/KGS"
+	"urlShortener/configuration"
 	"urlShortener/models"
 )
 
+
+var config configuration.Constants
+
+func SetConfiguration(constants configuration.Constants)  {
+	config = constants
+}
 
 func SaveRandomShortURLs() {
 	var db = connectToDatabase()
@@ -43,22 +50,10 @@ func CreateMapTable() {
 func ChooseShortURLTransaction()  string {
 	var db = connectToDatabase()
 
-	//Begin a transaction so two threads cannot change a row at the same time
-	tx := db.Begin()
-
-	if tx.Error != nil {
-		fmt.Print(tx.Error)
-	}
-
 	var selectedShortURL models.RandomShortURL
-	tx.Where("is_used = ?", false).First(&selectedShortURL)
-
-	selectedShortURL.IsUsed = true
-	tx.Save(&selectedShortURL)
-
-	if err := tx.Commit().Error; err != nil {
-		fmt.Printf("There is an error: %s\n", err.Error())
-	}
+	db.Raw("UPDATE random_short_urls SET is_used = ? WHERE short_url = " +
+		"(SELECT short_url FROM random_short_urls WHERE is_used = ? LIMIT 1) " +
+		"RETURNING *;", true, false).Scan(&selectedShortURL)
 	return selectedShortURL.ShortURL
 }
 
@@ -89,14 +84,16 @@ func RetriveLongURL(url string) models.ShortURLMap {
 	var db = connectToDatabase()
 	var mapping models.ShortURLMap
 
-	db.Raw("SELECT * from short_url_maps WHERE short_url = ?;", url).Scan(&mapping)
+	db.Raw("SELECT * from short_url_maps WHERE short_url = ?;", url).Scan(&mapping) //O(lgn)
 	return mapping
 }
 
 func connectToDatabase() *gorm.DB {
-	db, err := gorm.Open("postgres", "host=localhost port=5432 user=postgres dbname=koochooloo password=postgres")
+	db, err := gorm.Open(config.DatabaseConfig.DBName, config.DatabaseConfig.ConnectionString)
 	if err != nil {
 		fmt.Errorf("db new client error: %s", err)
 	}
 	return db
 }
+
+
