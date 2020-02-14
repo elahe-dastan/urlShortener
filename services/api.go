@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
+	"time"
 	"urlShortener/KGS"
 	"urlShortener/db"
 	"urlShortener/models"
@@ -29,16 +30,46 @@ func MapToShortURL(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.Unmarshal(reqBody, &newMap)
+
 	if !CheckURL(newMap) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	selectedShortURL := db.ChooseShortURLTransaction()
-	newMap.ShortURL = selectedShortURL
-	db.InsertToMapping(newMap)
+	//this part of code doesn't look good
+	if newMap.ExpirationTime.Before(time.Now()) {
+		newMap.ExpirationTime = time.Now().Add(2*time.Minute)
+	}
+
+	if newMap.ShortURL == "" {
+		newMap = AssignRandomShortURL(newMap)
+	}else {
+		if !AssignCustomShortURL(newMap) {
+			w.WriteHeader(http.StatusConflict)
+			return
+		}
+	}
+
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(newMap)
+}
+
+func AssignRandomShortURL(newMap models.ShortToLongURLMap) models.ShortToLongURLMap {
+	for true {
+		selectedShortURL := db.ChooseShortURLTransaction()
+		newMap.ShortURL = selectedShortURL
+		if err := db.InsertToMapping(newMap);err == nil {
+			return newMap
+		}
+	}
+	return newMap
+}
+
+func AssignCustomShortURL(newMap models.ShortToLongURLMap) bool {
+	if err := db.InsertToMapping(newMap);err != nil {
+		return false
+	}
+	return true
 }
 
 func RedirectToLongURL(w http.ResponseWriter, r *http.Request) {

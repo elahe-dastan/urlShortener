@@ -43,11 +43,27 @@ func CreateMapTable() {
 
 	db.Debug().AutoMigrate(&models.ShortToLongURLMap{})
 
+	db.Exec("create or replace function delete_expired_row() " +
+					"returns trigger as " +
+					"$BODY$ " +
+					"begin " +
+					"delete from short_to_long_url_maps where expiration_time < NOW(); " +
+					"return null; " +
+					"end; " +
+					"$BODY$ " +
+					"LANGUAGE plpgsql;" +
+				"create trigger delete_expired_rows " +
+					"after insert " +
+					"on short_to_long_url_maps " +
+					"for each row " +
+					"execute procedure delete_expired_row();")
+
 	defer db.Close()
 }
 
 func ChooseShortURLTransaction() string {
 	var db = connectToDatabase()
+	defer db.Close()
 
 	var selectedShortURL models.RandomShortURL
 	db.Raw("UPDATE random_short_urls SET is_used = ? WHERE short_url = " +
@@ -56,9 +72,10 @@ func ChooseShortURLTransaction() string {
 	return selectedShortURL.ShortURL
 }
 
-func InsertToMapping(urlMap models.ShortToLongURLMap)  {
+func InsertToMapping(urlMap models.ShortToLongURLMap) error {
 	var db = connectToDatabase()
-	db.Create(&urlMap)
+	err := db.Create(&urlMap).Error
+	return err
 }
 
 func RetrieveLongURL(url string) (models.ShortToLongURLMap, error) {
