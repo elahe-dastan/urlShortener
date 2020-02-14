@@ -1,6 +1,6 @@
 package models
 
-type ShortURLMap struct {
+type ShortToLongURLMap struct {
 	Id   int  `gorm:"primary_key"`
 	LongURL  string `gorm:"unique;not null"`
 	ShortURL string  `gorm:"not null"`

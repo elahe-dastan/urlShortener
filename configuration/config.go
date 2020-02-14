@@ -2,6 +2,7 @@ package configuration
 
 import (
 	"github.com/spf13/viper"
+	"log"
 )
 
 type Constants struct {
@@ -14,16 +15,19 @@ type Database struct {
 }
 
 
-func InitViper() (Constants, error){
+func ReadConfig() Constants {
 	viper.SetConfigName("config")
 	viper.AddConfigPath("./configuration/")
 	viper.SetConfigType("yml")
 
 	if err := viper.ReadInConfig();err != nil {
-		return Constants{}, err
+		log.Fatalf("err: %s", err)
 	}
 
 	var constants Constants
-	err := viper.Unmarshal(&constants)
-	return constants, err
+	if err := viper.Unmarshal(&constants); err != nil {
+		log.Fatalf("err: %s", err)
+	}
+
+	return constants
 }

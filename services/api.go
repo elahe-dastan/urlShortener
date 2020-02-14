@@ -16,22 +16,22 @@ import (
 
 func RunServices()  {
 	router := mux.NewRouter().StrictSlash(true)
-	router.HandleFunc("/urls", mapLongURL)
-	router.HandleFunc("/redirect/{shortURL}", redirection)
+	router.HandleFunc("/urls", MapToShortURL)
+	router.HandleFunc("/redirect/{shortURL}", RedirectToLongURL)
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
 
-func mapLongURL(w http.ResponseWriter, r *http.Request) {
-	var newMap models.ShortURLMap
+func MapToShortURL(w http.ResponseWriter, r *http.Request) {
+	var newMap models.ShortToLongURLMap
 	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		fmt.Fprintf(w, "Kindly enter data with the long URL")
+		fmt.Fprintf(w, "can not read the request due to the following err\n :%s", err)
 	}
 
 	json.Unmarshal(reqBody, &newMap)
 	if !CheckURL(newMap) {
 		w.WriteHeader(http.StatusBadRequest)
-		//json.NewEncoder(w).Encode(newMap)
+		return
 	}
 
 	selectedShortURL := db.ChooseShortURLTransaction()
@@ -41,23 +41,25 @@ func mapLongURL(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(newMap)
 }
 
-func redirection(w http.ResponseWriter, r *http.Request) {
+func RedirectToLongURL(w http.ResponseWriter, r *http.Request) {
 	shortURL := mux.Vars(r)["shortURL"]
 	if !CheckShortURL(shortURL) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	mapping := db.RetriveLongURL(shortURL)
-	if mapping.LongURL == "" {
+
+	mapping, err := db.RetrieveLongURL(shortURL)
+
+	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
+
 	http.Redirect(w, r, mapping.LongURL, http.StatusFound)
 	json.NewEncoder(w).Encode(mapping)
 }
 
-func CheckURL(newMap models.ShortURLMap) bool {
-	//check url length
+func CheckURL(newMap models.ShortToLongURLMap) bool {
 	_, err := url.ParseRequestURI(newMap.LongURL)
 	if err != nil {
 		return false

@@ -8,8 +8,9 @@ import (
 
 func main()  {
 	//Give Configuration to db file
-	constant, _ := configuration.InitViper()
+	constant := configuration.ReadConfig()
 	db.SetConfiguration(constant)
+
 	//This part of code generates all the random short ULRs possible and saves them into the database
 	//This code executes only if the table containing the short URLs doesn't exist
 	db.SaveRandomShortURLs()

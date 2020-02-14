@@ -1,11 +1,10 @@
 package db
 
 import (
-	"bufio"
-	"fmt"
+	"errors"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"os"
+	"log"
 	"urlShortener/KGS"
 	"urlShortener/configuration"
 	"urlShortener/models"
@@ -38,62 +37,48 @@ func SaveRandomShortURLs() {
 func CreateMapTable() {
 	var db = connectToDatabase()
 
-	if db.HasTable(&models.RandomShortURL{}) {
+	if db.HasTable(&models.ShortToLongURLMap{}) {
 		return
 	}
 
-	db.Debug().AutoMigrate(&models.ShortURLMap{})
+	db.Debug().AutoMigrate(&models.ShortToLongURLMap{})
 
 	defer db.Close()
 }
 
-func ChooseShortURLTransaction()  string {
+func ChooseShortURLTransaction() string {
 	var db = connectToDatabase()
 
 	var selectedShortURL models.RandomShortURL
 	db.Raw("UPDATE random_short_urls SET is_used = ? WHERE short_url = " +
 		"(SELECT short_url FROM random_short_urls WHERE is_used = ? LIMIT 1) " +
-		"RETURNING *;", true, false).Scan(&selectedShortURL)
+		"RETURNING *;", true, false).Scan(&selectedShortURL) //O(lgn)
 	return selectedShortURL.ShortURL
 }
 
-func ChooseShortURLRowLock()  string {
-	var db = connectToDatabase()
-
-	var selectedShortURL models.RandomShortURL
-	db.Raw("SELECT * FROM random_short_urls WHERE is_used = ? LIMIT = 1 FOR UPDATE", false).Scan(&selectedShortURL)
-
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Enter text: ")
-	text, _ := reader.ReadString('\n')
-	fmt.Println(text)
-
-	selectedShortURL.IsUsed = true
-	db.Save(&selectedShortURL)
-
-	db.Exec("COMMIT")
-	return selectedShortURL.ShortURL
-}
-
-func InsertToMapping(urlMap models.ShortURLMap)  {
+func InsertToMapping(urlMap models.ShortToLongURLMap)  {
 	var db = connectToDatabase()
 	db.Create(&urlMap)
 }
 
-func RetriveLongURL(url string) models.ShortURLMap {
+func RetrieveLongURL(url string) (models.ShortToLongURLMap, error) {
 	var db = connectToDatabase()
-	var mapping models.ShortURLMap
+	var mapping models.ShortToLongURLMap
 
 	db.Raw("SELECT * from short_url_maps WHERE short_url = ?;", url).Scan(&mapping) //O(lgn)
-	return mapping
+
+	var err error
+	if mapping.LongURL == "" {
+		err = errors.New("This short URL doesn't exist in the database")
+	}
+
+	return mapping, err
 }
 
 func connectToDatabase() *gorm.DB {
 	db, err := gorm.Open(config.DatabaseConfig.DBName, config.DatabaseConfig.ConnectionString)
 	if err != nil {
-		fmt.Errorf("db new client error: %s", err)
+		log.Fatalf("can not open connection to datbase due to the following err\n: %s", err)
 	}
 	return db
 }
-
-
