@@ -1,13 +1,13 @@
-package tests
+package test
 
 import (
 	"testing"
-	"urlShortener/services"
+	"urlShortener/service"
 )
 
 func TestInvalidCharacterInShortURL(t *testing.T)  {
 	shortURL := "34"
-	result := services.CheckShortURL(shortURL)
+	result := service.CheckShortURL(shortURL)
 	if result == true {
 		t.Errorf("Validtion was incorrect")
 	}
@@ -15,7 +15,7 @@ func TestInvalidCharacterInShortURL(t *testing.T)  {
 
 func TestInvalidShortURLLength(t *testing.T)  {
 	shortURL := "fsg"
-	result := services.CheckShortURL(shortURL)
+	result := service.CheckShortURL(shortURL)
 	if result == true {
 		t.Errorf("Validtion was incorrect")
 	}

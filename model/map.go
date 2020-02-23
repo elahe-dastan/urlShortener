@@ -1,8 +1,8 @@
-package models
+package model
 
 import "time"
 
-type ShortToLongURLMap struct {
+type Map struct {
 	Id   int  `gorm:"primary_key"`
 	LongURL  string `gorm:"not null"`
 	ShortURL string  `gorm:"unique;not null"`

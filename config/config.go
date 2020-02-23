@@ -1,4 +1,4 @@
-package configuration
+package config
 
 import (
 	"github.com/spf13/viper"
@@ -17,7 +17,7 @@ type Database struct {
 
 func ReadConfig() Constants {
 	viper.SetConfigName("config")
-	viper.AddConfigPath("./configuration/")
+	viper.AddConfigPath("./config/")
 	viper.SetConfigType("yml")
 
 	if err := viper.ReadInConfig();err != nil {
