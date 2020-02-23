@@ -1,9 +1,9 @@
 package test
 
 import (
+	"github.com/elahe-dastan/urlShortener_KGS/model"
+	"github.com/elahe-dastan/urlShortener_KGS/service"
 	"testing"
-	"urlShortener/model"
-	"urlShortener/service"
 )
 
 func TestUniCode(t *testing.T)  {

@@ -2,12 +2,12 @@ package db
 
 import (
 	"errors"
+	"github.com/elahe-dastan/urlShortener_KGS/config"
+	"github.com/elahe-dastan/urlShortener_KGS/generator"
+	"github.com/elahe-dastan/urlShortener_KGS/model"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"log"
-	"urlShortener/generator"
-	"urlShortener/config"
-	"urlShortener/model"
 )
 
 

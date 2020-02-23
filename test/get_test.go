@@ -1,8 +1,8 @@
 package test
 
 import (
+	"github.com/elahe-dastan/urlShortener_KGS/service"
 	"testing"
-	"urlShortener/service"
 )
 
 func TestInvalidCharacterInShortURL(t *testing.T)  {

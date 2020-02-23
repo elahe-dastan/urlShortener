@@ -10,9 +10,9 @@ import (
 	"net/url"
 	"regexp"
 	"time"
-	"urlShortener/generator"
-	"urlShortener/db"
-	"urlShortener/model"
+	"github.com/elahe-dastan/urlShortener_KGS/generator"
+	"github.com/elahe-dastan/urlShortener_KGS/db"
+	"github.com/elahe-dastan/urlShortener_KGS/model"
 )
 
 func Run()  {

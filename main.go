@@ -1,9 +1,9 @@
 package main
 
 import (
-	"urlShortener/config"
-	"urlShortener/db"
-	"urlShortener/service"
+	"github.com/elahe-dastan/urlShortener_KGS/config"
+	"github.com/elahe-dastan/urlShortener_KGS/db"
+	"github.com/elahe-dastan/urlShortener_KGS/service"
 )
 
 func main()  {

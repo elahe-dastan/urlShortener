@@ -1,6 +1,6 @@
 package generator
 
-import "urlShortener/model"
+import "github.com/elahe-dastan/urlShortener_KGS/model"
 
 const LengthOfShortURL  =  8
 
