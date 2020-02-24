@@ -3,6 +3,10 @@ package service
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/elahe-dastan/urlShortener_KGS/db"
+	"github.com/elahe-dastan/urlShortener_KGS/generator"
+	"github.com/elahe-dastan/urlShortener_KGS/middleware"
+	"github.com/elahe-dastan/urlShortener_KGS/model"
 	"github.com/gorilla/mux"
 	"io/ioutil"
 	"log"
@@ -10,22 +14,22 @@ import (
 	"net/url"
 	"regexp"
 	"time"
-	"github.com/elahe-dastan/urlShortener_KGS/generator"
-	"github.com/elahe-dastan/urlShortener_KGS/db"
-	"github.com/elahe-dastan/urlShortener_KGS/model"
 )
 
 func Run()  {
-	router := mux.NewRouter().StrictSlash(true)
-	router.HandleFunc("/urls", mapping)
-	router.HandleFunc("/redirect/{shortURL}", redirect)
-	log.Fatal(http.ListenAndServe(":8080", router))
+	//router := mux.NewRouter().StrictSlash(true)
+	mux := &http.ServeMux{}
+	mux.HandleFunc("/urls", mapping)
+	mux.HandleFunc("/redirect/{shortURL}", redirect)
+	handler := middleware.LogRequestHandler(mux)
+	log.Fatal(http.ListenAndServe(":8080", handler))
 }
 
 func mapping(w http.ResponseWriter, r *http.Request) {
 	var new model.Map
 	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
+		w.Header().Add("err",err.Error())
 		fmt.Fprintf(w, "can not read the request due to the following err\n :%s", err)
 	}
 

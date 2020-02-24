@@ -7,11 +7,16 @@ import (
 
 type Constants struct {
 	DatabaseConfig Database
+	Log LogFile
 }
 
 type Database struct {
 	DBName string
 	ConnectionString string
+}
+
+type LogFile struct {
+	Address string
 }
 
 
