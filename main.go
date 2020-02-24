@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/elahe-dastan/urlShortener_KGS/config"
 	"github.com/elahe-dastan/urlShortener_KGS/db"
+	"github.com/elahe-dastan/urlShortener_KGS/middleware"
 	"github.com/elahe-dastan/urlShortener_KGS/service"
 )
 
@@ -10,6 +11,7 @@ func main()  {
 	//Give Configuration to db file
 	constant := config.ReadConfig()
 	db.SetConfig(constant)
+	middleware.SetConfig(constant)
 
 	//This part of code generates all the random short ULRs possible and saves them into the database
 	//This code executes only if the table containing the short URLs doesn't exist

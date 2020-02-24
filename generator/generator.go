@@ -2,7 +2,7 @@ package generator
 
 import "github.com/elahe-dastan/urlShortener_KGS/model"
 
-const LengthOfShortURL  =  8
+const LengthOfShortURL  =  2
 
 const source  = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
