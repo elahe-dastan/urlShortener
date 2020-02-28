@@ -3,8 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="6b442fab-00c3-43f9-bfcd-7be4438a3565" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/root.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/root.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/setupdb.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/setupdb.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/server.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/db.go" beforeDir="false" afterPath="$PROJECT_DIR$/db/db.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/middleware/logger.go" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/logger.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/service/api.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/get_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/test/get_test.go" afterDir="false" />
     </list>

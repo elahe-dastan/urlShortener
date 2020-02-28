@@ -23,8 +23,7 @@
 /Godeps/
 
 ### IDE file
-.idea
-.idea/workspace.xml
+.idea/*
 
 ### cobra
 LICENSE

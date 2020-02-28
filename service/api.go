@@ -26,36 +26,37 @@ func Run()  {
 }
 
 func mapping(w http.ResponseWriter, r *http.Request) {
-	var new model.Map
+	var newMap model.Map
 	reqBody, err := ioutil.ReadAll(r.Body)
+
 	if err != nil {
 		w.Header().Add("err",err.Error())
 		fmt.Fprintf(w, "can not read the request due to the following err\n :%s", err)
 	}
 
-	json.Unmarshal(reqBody, &new)
+	json.Unmarshal(reqBody, &newMap)
 
-	if !CheckLongURL(new) {
+	if !CheckLongURL(newMap) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	// this part of code doesn't look good
-	if new.ExpirationTime.Before(time.Now()) {
-		new.ExpirationTime = time.Now().Add(2*time.Minute)
+	if newMap.ExpirationTime.Before(time.Now()) {
+		newMap.ExpirationTime = time.Now().Add(2*time.Minute)
 	}
 
-	if new.ShortURL == "" {
-		new = randomShortURL(new)
+	if newMap.ShortURL == "" {
+		newMap = randomShortURL(newMap)
 	}else {
-		if !customShortURL(new) {
+		if !customShortURL(newMap) {
 			w.WriteHeader(http.StatusConflict)
 			return
 		}
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(new)
+	json.NewEncoder(w).Encode(newMap)
 }
 
 func randomShortURL(new model.Map) model.Map {

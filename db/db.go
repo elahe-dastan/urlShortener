@@ -72,6 +72,7 @@ func ChooseShortURL() string {
 	db.Raw("UPDATE short_urls SET is_used = ? WHERE url = " +
 		"(SELECT url FROM short_urls WHERE is_used = ? LIMIT 1) " +
 		"RETURNING *;", true, false).Scan(&selectedURL) //O(lgn)
+
 	return selectedURL.URL
 }
 
@@ -102,5 +103,6 @@ func Connect() *gorm.DB {
 	if err != nil {
 		log.Fatalf("can not open connection to datbase due to the following err\n: %s", err)
 	}
+
 	return db
 }
