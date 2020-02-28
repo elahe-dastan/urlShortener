@@ -14,9 +14,10 @@ func generateURLsRec(prefix string,k int )  {
 		return
 	}
 
+	k--
 	for i := range source {
 		newPrefix := prefix + string(source[i])
-		generateURLsRec(newPrefix, k-1)
+		generateURLsRec(newPrefix, k)
 	}
 }
 
