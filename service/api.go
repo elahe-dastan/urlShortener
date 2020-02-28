@@ -59,14 +59,13 @@ func mapping(w http.ResponseWriter, r *http.Request) {
 }
 
 func randomShortURL(new model.Map) model.Map {
-	for true {
-		url := db.ChooseShortURL()
-		new.ShortURL = url
+	for  {
+		u := db.ChooseShortURL()
+		new.ShortURL = u
 		if err := db.InsertMap(new);err == nil {
 			return new
 		}
 	}
-	return new
 }
 
 func customShortURL(newMap model.Map) bool {
@@ -96,10 +95,7 @@ func redirect(w http.ResponseWriter, r *http.Request) {
 
 func CheckLongURL(newMap model.Map) bool {
 	_, err := url.ParseRequestURI(newMap.LongURL)
-	if err != nil {
-		return false
-	}
-	return true
+	return err != nil
 }
 
 func CheckShortURL(shortURL string) bool {

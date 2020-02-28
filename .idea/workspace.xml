@@ -3,9 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="6b442fab-00c3-43f9-bfcd-7be4438a3565" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db/db.go" beforeDir="false" afterPath="$PROJECT_DIR$/db/db.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/ShortToLongURLMap.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/ShortToLongURLMap.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/api.go" beforeDir="false" afterPath="$PROJECT_DIR$/services/api.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/root.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/root.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/setupdb.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/setupdb.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/api.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/get_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/test/get_test.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,6 +44,16 @@
     <property name="settings.editor.selected.configurable" value="go" />
   </component>
   <component name="RunManager" selected="Go Build.go build main.go">
+    <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
+      <module name="urlShortener" />
+      <working_directory value="$PROJECT_DIR$/" />
+      <go_parameters value="-i" />
+      <kind value="FILE" />
+      <filePath value="$PROJECT_DIR$/" />
+      <package value="urlShortener" />
+      <directory value="$PROJECT_DIR$/" />
+      <method v="2" />
+    </configuration>
     <configuration name="go build api.go" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
       <module name="urlShortener" />
       <working_directory value="$PROJECT_DIR$/" />
@@ -60,6 +71,17 @@
       <filePath value="$PROJECT_DIR$/main.go" />
       <package value="urlShortener" />
       <directory value="$PROJECT_DIR$/" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="GoTestRunConfiguration" factoryName="Go Test">
+      <module name="urlShortener" />
+      <working_directory value="$PROJECT_DIR$/" />
+      <go_parameters value="-i" />
+      <framework value="gotest" />
+      <kind value="DIRECTORY" />
+      <package value="urlShortener" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/" />
       <method v="2" />
     </configuration>
   </component>

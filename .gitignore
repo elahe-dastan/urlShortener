@@ -22,7 +22,14 @@
 /vendor/
 /Godeps/
 
-# IDE file
+### IDE file
 .idea
+.idea/workspace.xml
+
+### cobra
+LICENSE
+
+### binary
+urlShortener_KGS
 
 # End of https://www.gitignore.io/api/go

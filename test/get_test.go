@@ -8,6 +8,7 @@ import (
 func TestInvalidCharacterInShortURL(t *testing.T)  {
 	shortURL := "34"
 	result := service.CheckShortURL(shortURL)
+
 	if result == true {
 		t.Errorf("Validtion was incorrect")
 	}
