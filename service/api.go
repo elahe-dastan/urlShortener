@@ -18,10 +18,10 @@ import (
 
 func Run()  {
 	//router := mux.NewRouter().StrictSlash(true)
-	mux := &http.ServeMux{}
-	mux.HandleFunc("/urls", mapping)
-	mux.HandleFunc("/redirect/{shortURL}", redirect)
-	handler := middleware.LogRequestHandler(mux)
+	m := &http.ServeMux{}
+	m.HandleFunc("/urls", mapping)
+	m.HandleFunc("/redirect/{shortURL}", redirect)
+	handler := middleware.LogRequestHandler(m)
 	log.Fatal(http.ListenAndServe(":8080", handler))
 }
 
@@ -48,11 +48,9 @@ func mapping(w http.ResponseWriter, r *http.Request) {
 
 	if newMap.ShortURL == "" {
 		newMap = randomShortURL(newMap)
-	}else {
-		if !customShortURL(newMap) {
-			w.WriteHeader(http.StatusConflict)
-			return
-		}
+	}else if !customShortURL(newMap) {
+		w.WriteHeader(http.StatusConflict)
+		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
@@ -96,7 +94,7 @@ func redirect(w http.ResponseWriter, r *http.Request) {
 
 func CheckLongURL(newMap model.Map) bool {
 	_, err := url.ParseRequestURI(newMap.LongURL)
-	return err != nil
+	return err == nil
 }
 
 func CheckShortURL(shortURL string) bool {
@@ -108,4 +106,3 @@ func CheckShortURL(shortURL string) bool {
 	match, _ := regexp.MatchString("^[a-zA-Z]+$", shortURL)
 	return match
 }
-

@@ -23,7 +23,7 @@
 /Godeps/
 
 ### IDE file
-.idea/*
+.idea
 
 ### cobra
 LICENSE

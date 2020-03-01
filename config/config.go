@@ -21,7 +21,11 @@ type LogFile struct {
 
 
 func ReadConfig() Constants {
-	if err := viper.ReadInConfig();err != nil {
+	viper.SetConfigName("config")
+	viper.AddConfigPath("./config/")
+	viper.SetConfigType("yml")
+
+	if err := viper.ReadInConfig(); err != nil {
 		log.Fatalf("err: %s", err)
 	}
 
