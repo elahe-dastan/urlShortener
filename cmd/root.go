@@ -11,9 +11,6 @@ import (
 	"os"
 )
 
-var cfgFile string
-var exitFailure = 1
-
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command {
 	Use:   "urlShortener",
@@ -32,6 +29,7 @@ func Execute() {
 	server.Register(rootCmd)
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
+		exitFailure := 1
 		os.Exit(exitFailure)
 	}
 }

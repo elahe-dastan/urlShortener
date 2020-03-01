@@ -6,14 +6,12 @@ import (
 	"github.com/elahe-dastan/urlShortener_KGS/generator"
 	"github.com/elahe-dastan/urlShortener_KGS/model"
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"log"
 )
 
-
 var configuration config.Database
 
-func SetConfig(constants config.Constants)  {
+func SetConfig(constants config.Constants) {
 	configuration = constants.DatabaseConfig
 }
 
@@ -28,8 +26,8 @@ func SaveShortURLs() {
 	urls := generator.Generate()
 	db.Debug().AutoMigrate(&model.ShortURL{})
 
-	for _, url := range urls {
-		db.Create(&url)
+	for _, u := range urls {
+		db.Create(&u)
 	}
 
 	defer db.Close()
@@ -47,19 +45,19 @@ func CreateMap() {
 	db.Debug().AutoMigrate(&model.Map{})
 
 	db.Exec("create or replace function delete_expired_row() " +
-					"returns trigger as " +
-					"$BODY$ " +
-					"begin " +
-					"delete from maps where expiration_time < NOW(); " +
-					"return null; " +
-					"end; " +
-					"$BODY$ " +
-					"LANGUAGE plpgsql;" +
-				"create trigger delete_expired_rows " +
-					"after insert " +
-					"on maps " +
-					"for each row " +
-					"execute procedure delete_expired_row();")
+		"returns trigger as " +
+		"$BODY$ " +
+		"begin " +
+		"delete from maps where expiration_time < NOW(); " +
+		"return null; " +
+		"end; " +
+		"$BODY$ " +
+		"LANGUAGE plpgsql;" +
+		"create trigger delete_expired_rows " +
+		"after insert " +
+		"on maps " +
+		"for each row " +
+		"execute procedure delete_expired_row();")
 
 	defer db.Close()
 }
@@ -69,8 +67,8 @@ func ChooseShortURL() string {
 	defer db.Close()
 
 	var selectedURL model.ShortURL
-	db.Raw("UPDATE short_urls SET is_used = ? WHERE url = " +
-		"(SELECT url FROM short_urls WHERE is_used = ? LIMIT 1) " +
+	db.Raw("UPDATE short_urls SET is_used = ? WHERE url = "+
+		"(SELECT url FROM short_urls WHERE is_used = ? LIMIT 1) "+
 		"RETURNING *;", true, false).Scan(&selectedURL) //O(lgn)
 
 	return selectedURL.URL
@@ -101,7 +99,7 @@ func Retrieve(url string) (model.Map, error) {
 func Connect() *gorm.DB {
 	db, err := gorm.Open(configuration.DBName, configuration.ConnectionString)
 	if err != nil {
-		log.Fatalf("can not open connection to datbase due to the following err\n: %s", err)
+		log.Fatalf("can not open connection to database due to the following err\n: %s", err)
 	}
 
 	return db

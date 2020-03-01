@@ -7,18 +7,17 @@ import (
 
 type Constants struct {
 	DatabaseConfig Database
-	Log LogFile
+	Log            LogFile
 }
 
 type Database struct {
-	DBName string
+	DBName           string
 	ConnectionString string
 }
 
 type LogFile struct {
 	Address string
 }
-
 
 func ReadConfig() Constants {
 	viper.SetConfigName("config")

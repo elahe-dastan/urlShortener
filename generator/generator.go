@@ -2,27 +2,25 @@ package generator
 
 import "github.com/elahe-dastan/urlShortener_KGS/model"
 
-const LengthOfShortURL  =  2
+const LengthOfShortURL = 2
 
-const source  = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+const source = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-var shortURLs []model.ShortURL
-
-func generateURLsRec(prefix string,k int )  {
+func generateURLsRec(prefix string, k int, shortURLs *[]model.ShortURL) {
 	if k == 0 {
-		shortURLs = append(shortURLs, model.ShortURL{URL: prefix, IsUsed:false})
+		*shortURLs = append(*shortURLs, model.ShortURL{URL: prefix, IsUsed: false})
 		return
 	}
 
 	k--
 	for i := range source {
 		newPrefix := prefix + string(source[i])
-		generateURLsRec(newPrefix, k)
+		generateURLsRec(newPrefix, k, shortURLs)
 	}
 }
 
-func Generate()  []model.ShortURL {
-	generateURLsRec("", LengthOfShortURL)
+func Generate() []model.ShortURL {
+	var shortURLs []model.ShortURL
+	generateURLsRec("", LengthOfShortURL, &shortURLs)
 	return shortURLs
 }
-

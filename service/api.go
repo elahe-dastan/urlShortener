@@ -31,10 +31,13 @@ func mapping(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		w.Header().Add("err",err.Error())
-		fmt.Fprintf(w, "can not read the request due to the following err\n :%s", err)
+		fmt.Print(w, "can not read the request due to the following err\n :%s", err)
 	}
 
-	json.Unmarshal(reqBody, &newMap)
+	err = json.Unmarshal(reqBody, &newMap)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	if !CheckLongURL(newMap) {
 		w.WriteHeader(http.StatusBadRequest)
@@ -54,7 +57,10 @@ func mapping(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(newMap)
+	err = json.NewEncoder(w).Encode(newMap)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func randomShortURL(new model.Map) model.Map {
@@ -89,7 +95,10 @@ func redirect(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Redirect(w, r, mapping.LongURL, http.StatusFound)
-	json.NewEncoder(w).Encode(mapping)
+	err = json.NewEncoder(w).Encode(mapping)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func CheckLongURL(newMap model.Map) bool {

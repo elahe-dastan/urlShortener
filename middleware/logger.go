@@ -54,6 +54,7 @@ func LogRequestHandler(h http.Handler) http.Handler {
 		ri.err = w.Header().Get("err")
 		write(ri)
 	}
+
 	return http.HandlerFunc(fn)
 }
 
@@ -85,9 +86,10 @@ func requestGetRemoteAddress(r *http.Request) string {
 		for i, p := range parts {
 			parts[i] = strings.TrimSpace(p)
 		}
-		// TODO: should return first non-local address
+		// should return first non-local address
 		return parts[0]
 	}
+
 	return hdrRealIP
 }
 
@@ -98,5 +100,6 @@ func ipAddrFromRemoteAddr(s string) string {
 	if idx == -1 {
 		return s
 	}
+
 	return s[:idx]
 }
