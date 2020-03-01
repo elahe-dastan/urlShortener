@@ -2,11 +2,13 @@ package db
 
 import (
 	"errors"
+	"log"
+
 	"github.com/elahe-dastan/urlShortener_KGS/config"
 	"github.com/elahe-dastan/urlShortener_KGS/generator"
 	"github.com/elahe-dastan/urlShortener_KGS/model"
 	"github.com/jinzhu/gorm"
-	"log"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
 var configuration config.Database
@@ -24,10 +26,12 @@ func SaveShortURLs() {
 	}
 
 	urls := generator.Generate()
+
 	db.Debug().AutoMigrate(&model.ShortURL{})
 
 	for _, u := range urls {
-		db.Create(&u)
+		a := &u
+		db.Create(a)
 	}
 
 	defer db.Close()
@@ -64,9 +68,11 @@ func CreateMap() {
 
 func ChooseShortURL() string {
 	var db = Connect()
-	defer db.Close()
 
 	var selectedURL model.ShortURL
+
+	defer db.Close()
+
 	db.Raw("UPDATE short_urls SET is_used = ? WHERE url = "+
 		"(SELECT url FROM short_urls WHERE is_used = ? LIMIT 1) "+
 		"RETURNING *;", true, false).Scan(&selectedURL) //O(lgn)
@@ -78,12 +84,14 @@ func ChooseShortURL() string {
 func InsertMap(urlMap model.Map) error {
 	var db = Connect()
 	err := db.Create(&urlMap).Error
+
 	return err
 }
 
 // Gets a short url as parameter and returns a Map model
 func Retrieve(url string) (model.Map, error) {
 	var db = Connect()
+
 	var mapping model.Map
 
 	db.Raw("SELECT * from maps WHERE url = ?;", url).Scan(&mapping) //O(lgn)

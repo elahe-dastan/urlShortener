@@ -1,12 +1,13 @@
 package test
 
 import (
+	"testing"
+
 	"github.com/elahe-dastan/urlShortener_KGS/model"
 	"github.com/elahe-dastan/urlShortener_KGS/service"
-	"testing"
 )
 
-func TestUniCode(t *testing.T)  {
+func TestUniCode(t *testing.T) {
 	newMap := model.Map{LongURL: "https://fa.wikipedia.org/wiki/%D8%AA%D9%87%D8%B1%D8%A7%D9%86"}
 	result := service.CheckLongURL(newMap)
 

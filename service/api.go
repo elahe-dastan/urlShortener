@@ -3,20 +3,21 @@ package service
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/elahe-dastan/urlShortener_KGS/db"
-	"github.com/elahe-dastan/urlShortener_KGS/generator"
-	"github.com/elahe-dastan/urlShortener_KGS/middleware"
-	"github.com/elahe-dastan/urlShortener_KGS/model"
-	"github.com/gorilla/mux"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
 	"regexp"
 	"time"
+
+	"github.com/elahe-dastan/urlShortener_KGS/db"
+	"github.com/elahe-dastan/urlShortener_KGS/generator"
+	"github.com/elahe-dastan/urlShortener_KGS/middleware"
+	"github.com/elahe-dastan/urlShortener_KGS/model"
+	"github.com/gorilla/mux"
 )
 
-func Run()  {
+func Run() {
 	//router := mux.NewRouter().StrictSlash(true)
 	m := &http.ServeMux{}
 	m.HandleFunc("/urls", mapping)
@@ -27,10 +28,10 @@ func Run()  {
 
 func mapping(w http.ResponseWriter, r *http.Request) {
 	var newMap model.Map
-	reqBody, err := ioutil.ReadAll(r.Body)
 
+	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		w.Header().Add("err",err.Error())
+		w.Header().Add("err", err.Error())
 		fmt.Print(w, "can not read the request due to the following err\n :%s", err)
 	}
 
@@ -46,37 +47,37 @@ func mapping(w http.ResponseWriter, r *http.Request) {
 
 	// this part of code doesn't look good
 	if newMap.ExpirationTime.Before(time.Now()) {
-		newMap.ExpirationTime = time.Now().Add(2*time.Minute)
+		newMap.ExpirationTime = time.Now().Add(2 * time.Minute)
 	}
 
 	if newMap.ShortURL == "" {
 		newMap = randomShortURL(newMap)
-	}else if !customShortURL(newMap) {
+	} else if !customShortURL(newMap) {
 		w.WriteHeader(http.StatusConflict)
 		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	err = json.NewEncoder(w).Encode(newMap)
-	if err != nil {
+	if err = json.NewEncoder(w).Encode(newMap); err != nil {
 		log.Fatal(err)
 	}
 }
 
 func randomShortURL(new model.Map) model.Map {
-	for  {
+	for {
 		u := db.ChooseShortURL()
 		new.ShortURL = u
-		if err := db.InsertMap(new);err == nil {
+		if err := db.InsertMap(new); err == nil {
 			return new
 		}
 	}
 }
 
 func customShortURL(newMap model.Map) bool {
-	if err := db.InsertMap(newMap);err != nil {
+	if err := db.InsertMap(newMap); err != nil {
 		return false
 	}
+
 	return true
 }
 
@@ -95,8 +96,7 @@ func redirect(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Redirect(w, r, mapping.LongURL, http.StatusFound)
-	err = json.NewEncoder(w).Encode(mapping)
-	if err != nil {
+	if err = json.NewEncoder(w).Encode(mapping); err != nil {
 		log.Fatal(err)
 	}
 }

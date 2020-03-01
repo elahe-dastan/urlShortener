@@ -13,6 +13,7 @@ func generateURLsRec(prefix string, k int, shortURLs *[]model.ShortURL) {
 	}
 
 	k--
+
 	for i := range source {
 		newPrefix := prefix + string(source[i])
 		generateURLsRec(newPrefix, k, shortURLs)
@@ -21,6 +22,8 @@ func generateURLsRec(prefix string, k int, shortURLs *[]model.ShortURL) {
 
 func Generate() []model.ShortURL {
 	var shortURLs []model.ShortURL
+
 	generateURLsRec("", LengthOfShortURL, &shortURLs)
+
 	return shortURLs
 }
