@@ -1,44 +1,45 @@
 package middleware
 
 import (
-	"github.com/elahe-dastan/urlShortener_KGS/config"
-	"github.com/felixge/httpsnoop"
 	"log"
 	"net/http"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/elahe-dastan/urlShortener_KGS/config"
+	"github.com/felixge/httpsnoop"
 )
 
 var configuration config.LogFile
 
-func SetConfig(constants config.Constants)  {
+func SetConfig(constants config.Constants) {
 	configuration = constants.Log
 }
 
 // LogReqInfo describes info about HTTP request
 type HTTPReqInfo struct {
 	// GET etc.
-	method string
-	uri string
+	method  string
+	uri     string
 	referer string
-	ipaddr string
+	ipaddr  string
 	// response code, like 200, 404
 	code int
 	// number of bytes of the response sent
 	size int64
 	// how long did it take to
-	duration time.Duration
+	duration  time.Duration
 	userAgent string
-	err	string
+	err       string
 }
 
 func LogRequestHandler(h http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		ri := &HTTPReqInfo{
-			method: r.Method,
-			uri: r.URL.String(),
-			referer: r.Header.Get("Referer"),
+			method:    r.Method,
+			uri:       r.URL.String(),
+			referer:   r.Header.Get("Referer"),
 			userAgent: r.Header.Get("User-Agent"),
 		}
 
@@ -54,10 +55,11 @@ func LogRequestHandler(h http.Handler) http.Handler {
 		ri.err = w.Header().Get("err")
 		write(ri)
 	}
+
 	return http.HandlerFunc(fn)
 }
 
-func write(ri *HTTPReqInfo)  {
+func write(ri *HTTPReqInfo) {
 	f, err := os.OpenFile(configuration.Address, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Println(err)
@@ -74,18 +76,21 @@ func requestGetRemoteAddress(r *http.Request) string {
 	hdr := r.Header
 	hdrRealIP := hdr.Get("X-Real-Ip")
 	hdrForwardedFor := hdr.Get("X-Forwarded-For")
+
 	if hdrRealIP == "" && hdrForwardedFor == "" {
 		return ipAddrFromRemoteAddr(r.RemoteAddr)
 	}
+
 	if hdrForwardedFor != "" {
 		// X-Forwarded-For is potentially a list of addresses separated with ","
 		parts := strings.Split(hdrForwardedFor, ",")
 		for i, p := range parts {
 			parts[i] = strings.TrimSpace(p)
 		}
-		// TODO: should return first non-local address
+		// should return first non-local address
 		return parts[0]
 	}
+
 	return hdrRealIP
 }
 
@@ -96,5 +101,6 @@ func ipAddrFromRemoteAddr(s string) string {
 	if idx == -1 {
 		return s
 	}
+
 	return s[:idx]
 }

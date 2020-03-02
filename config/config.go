@@ -1,17 +1,18 @@
 package config
 
 import (
-	"github.com/spf13/viper"
 	"log"
+
+	"github.com/spf13/viper"
 )
 
 type Constants struct {
 	DatabaseConfig Database
-	Log LogFile
+	Log            LogFile
 }
 
 type Database struct {
-	DBName string
+	DBName           string
 	ConnectionString string
 }
 
@@ -19,9 +20,12 @@ type LogFile struct {
 	Address string
 }
 
-
 func ReadConfig() Constants {
-	if err := viper.ReadInConfig();err != nil {
+	viper.SetConfigName("config")
+	viper.AddConfigPath("./config/")
+	viper.SetConfigType("yml")
+
+	if err := viper.ReadInConfig(); err != nil {
 		log.Fatalf("err: %s", err)
 	}
 
