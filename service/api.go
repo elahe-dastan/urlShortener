@@ -55,8 +55,7 @@ func (a API) mapping(w http.ResponseWriter, r *http.Request) {
 
 	// this part of code doesn't look good
 	if newMap.ExpirationTime.Before(time.Now()) {
-		var duration time.Duration
-		duration = 5
+		var duration time.Duration = 5
 		newMap.ExpirationTime = time.Now().Add(duration * time.Minute)
 	}
 

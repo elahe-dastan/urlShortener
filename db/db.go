@@ -5,7 +5,7 @@ import (
 
 	"github.com/elahe-dastan/urlShortener_KGS/config"
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
+	_ "github.com/jinzhu/gorm/dialects/postgres" //adding dialect for postgres
 )
 
 func New(config config.Database) *gorm.DB {
