@@ -10,23 +10,31 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/elahe-dastan/urlShortener_KGS/db"
+	"github.com/elahe-dastan/urlShortener_KGS/config"
 	"github.com/elahe-dastan/urlShortener_KGS/generator"
 	"github.com/elahe-dastan/urlShortener_KGS/middleware"
 	"github.com/elahe-dastan/urlShortener_KGS/model"
+	"github.com/elahe-dastan/urlShortener_KGS/store"
 	"github.com/gorilla/mux"
 )
 
-func Run() {
+type API struct {
+	Map      store.Map
+	ShortURL store.ShortURL
+}
+
+func (a API) Run(constant config.LogFile) {
 	//router := mux.NewRouter().StrictSlash(true)
 	m := &http.ServeMux{}
-	m.HandleFunc("/urls", mapping)
-	m.HandleFunc("/redirect/{shortURL}", redirect)
-	handler := middleware.LogRequestHandler(m)
+	m.HandleFunc("/urls", a.mapping)
+	m.HandleFunc("/redirect/{shortURL}", a.redirect)
+
+	c := middleware.Configuration{Config: constant}
+	handler := c.LogRequestHandler(m)
 	log.Fatal(http.ListenAndServe(":8080", handler))
 }
 
-func mapping(w http.ResponseWriter, r *http.Request) {
+func (a API) mapping(w http.ResponseWriter, r *http.Request) {
 	var newMap model.Map
 
 	reqBody, err := ioutil.ReadAll(r.Body)
@@ -47,48 +55,52 @@ func mapping(w http.ResponseWriter, r *http.Request) {
 
 	// this part of code doesn't look good
 	if newMap.ExpirationTime.Before(time.Now()) {
-		newMap.ExpirationTime = time.Now().Add(2 * time.Minute)
+		var duration time.Duration
+		duration = 5
+		newMap.ExpirationTime = time.Now().Add(duration * time.Minute)
 	}
 
 	if newMap.ShortURL == "" {
-		newMap = randomShortURL(newMap)
-	} else if !customShortURL(newMap) {
+		newMap = a.randomShortURL(newMap)
+	} else if !a.customShortURL(newMap) {
 		w.WriteHeader(http.StatusConflict)
 		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
+
 	if err = json.NewEncoder(w).Encode(newMap); err != nil {
 		log.Fatal(err)
 	}
 }
 
-func randomShortURL(new model.Map) model.Map {
+func (a API) randomShortURL(new model.Map) model.Map {
 	for {
-		u := db.ChooseShortURL()
+		u := a.ShortURL.Choose()
 		new.ShortURL = u
-		if err := db.InsertMap(new); err == nil {
+
+		if err := a.Map.Insert(new); err == nil {
 			return new
 		}
 	}
 }
 
-func customShortURL(newMap model.Map) bool {
-	if err := db.InsertMap(newMap); err != nil {
+func (a API) customShortURL(newMap model.Map) bool {
+	if err := a.Map.Insert(newMap); err != nil {
 		return false
 	}
 
 	return true
 }
 
-func redirect(w http.ResponseWriter, r *http.Request) {
+func (a API) redirect(w http.ResponseWriter, r *http.Request) {
 	shortURL := mux.Vars(r)["shortURL"]
 	if !CheckShortURL(shortURL) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	mapping, err := db.Retrieve(shortURL)
+	mapping, err := a.Map.Retrieve(shortURL)
 
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
@@ -96,6 +108,7 @@ func redirect(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Redirect(w, r, mapping.LongURL, http.StatusFound)
+
 	if err = json.NewEncoder(w).Encode(mapping); err != nil {
 		log.Fatal(err)
 	}
@@ -103,6 +116,7 @@ func redirect(w http.ResponseWriter, r *http.Request) {
 
 func CheckLongURL(newMap model.Map) bool {
 	_, err := url.ParseRequestURI(newMap.LongURL)
+
 	return err == nil
 }
 
@@ -113,5 +127,6 @@ func CheckShortURL(shortURL string) bool {
 	}
 
 	match, _ := regexp.MatchString("^[a-zA-Z]+$", shortURL)
+
 	return match
 }

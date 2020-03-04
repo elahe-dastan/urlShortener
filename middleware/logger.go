@@ -11,10 +11,8 @@ import (
 	"github.com/felixge/httpsnoop"
 )
 
-var configuration config.LogFile
-
-func SetConfig(constants config.Constants) {
-	configuration = constants.Log
+type Configuration struct {
+	Config config.LogFile
 }
 
 // LogReqInfo describes info about HTTP request
@@ -34,7 +32,7 @@ type HTTPReqInfo struct {
 	err       string
 }
 
-func LogRequestHandler(h http.Handler) http.Handler {
+func (config Configuration) LogRequestHandler(h http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		ri := &HTTPReqInfo{
 			method:    r.Method,
@@ -53,14 +51,14 @@ func LogRequestHandler(h http.Handler) http.Handler {
 		ri.size = m.Written
 		ri.duration = m.Duration
 		ri.err = w.Header().Get("err")
-		write(ri)
+		config.write(ri)
 	}
 
 	return http.HandlerFunc(fn)
 }
 
-func write(ri *HTTPReqInfo) {
-	f, err := os.OpenFile(configuration.Address, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+func (config Configuration) write(ri *HTTPReqInfo) {
+	f, err := os.OpenFile(config.Config.Address, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Println(err)
 	}

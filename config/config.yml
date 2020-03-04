@@ -1,5 +1,5 @@
 DatabaseConfig:
   DBName: "postgres"
-  ConnectionString: "host=localhost port=5432 user=postgres dbname=koochooloo password=postgres"
+  ConnectionString: "host=172.17.0.1 port=5431 user=postgres dbname=koochooloo password=postgres sslmode=disable"
 Log:
   Address: "/home/raha/Documents/log.txt"
