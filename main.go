@@ -4,6 +4,6 @@ import (
 	"github.com/elahe-dastan/urlShortener_KGS/cmd"
 )
 
-func main()  {
+func main() {
 	cmd.Execute()
 }
