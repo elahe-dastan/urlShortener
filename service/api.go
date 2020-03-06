@@ -23,13 +23,13 @@ type API struct {
 	ShortURL store.ShortURL
 }
 
-func (a API) Run(constant config.LogFile) {
+func (a API) Run(cfg config.LogFile) {
 	//router := mux.NewRouter().StrictSlash(true)
 	m := &http.ServeMux{}
 	m.HandleFunc("/urls", a.mapping)
 	m.HandleFunc("/redirect/{shortURL}", a.redirect)
 
-	c := middleware.Configuration{Config: constant}
+	c := middleware.Configuration{Config: cfg}
 	handler := c.LogRequestHandler(m)
 	log.Fatal(http.ListenAndServe(":8080", handler))
 }
