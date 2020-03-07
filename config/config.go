@@ -29,10 +29,10 @@ func ReadConfig() Constants {
 		log.Fatalf("err: %s", err)
 	}
 
-	var constants Constants
-	if err := viper.Unmarshal(&constants); err != nil {
+	var cfg Constants
+	if err := viper.Unmarshal(&cfg); err != nil {
 		log.Fatalf("err: %s", err)
 	}
 
-	return constants
+	return cfg
 }

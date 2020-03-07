@@ -8,16 +8,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func Register(root *cobra.Command, constant config.Constants) {
+func Register(root *cobra.Command, cfg config.Constants) {
 	root.AddCommand(
 		&cobra.Command{
 			Use:   "server",
 			Short: "Run server to serve the requests",
 			Run: func(cmd *cobra.Command, args []string) {
-				d := db.New(constant.DatabaseConfig)
+				d := db.New(cfg.DatabaseConfig)
 				api := service.API{Map: struct{ DB *gorm.DB }{DB: d},
 					ShortURL: struct{ DB *gorm.DB }{DB: d}}
-				api.Run(constant.Log)
+				api.Run(cfg.Log)
 			},
 		},
 	)

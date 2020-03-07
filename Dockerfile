@@ -1,8 +1,5 @@
 # Start from the latest golang base image
-FROM golang:alpine
-
-# Add Maintainer Info
-LABEL maintainer="Elahe Dastan <elahe.dstn@gmail.com>"
+FROM golang:alpine AS builder
 
 # Set the Current Working Directory inside the container
 WORKDIR /app
@@ -17,13 +14,21 @@ RUN go mod download
 COPY . .
 
 # Build the Go app
-RUN go build
+RUN go build -o /shortener
+
+FROM alpine:latest
+
+# Add Maintainer Info
+LABEL maintainer="Elahe Dastan <elahe.dstn@gmail.com>"
+
+WORKDIR /root/
+
+COPY --from=builder /shortener .
 
 # Expose port 8080 to the outside world
 EXPOSE 8080
 
-# Set up database
-RUN go run main.go setupdb
+ENTRYPOINT ["./shortener"]
 
 # Run server
-#RUN go run main.go server
+CMD ["server"]

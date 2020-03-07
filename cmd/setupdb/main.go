@@ -7,13 +7,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func Register(root *cobra.Command, constant config.Constants) {
+func Register(root *cobra.Command, cfg config.Constants) {
 	root.AddCommand(
 		&cobra.Command{
 			Use:   "setupdb",
 			Short: "Manages database, creates and fills tables if don't exist",
 			Run: func(cmd *cobra.Command, args []string) {
-				d := db.New(constant.DatabaseConfig)
+				d := db.New(cfg.DatabaseConfig)
 				u := store.ShortURL{DB: d}
 				m := store.Map{DB: d}
 

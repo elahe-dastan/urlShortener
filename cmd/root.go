@@ -22,10 +22,10 @@ func Execute() {
 
 	exitFailure := 1
 
-	constant := config.ReadConfig()
+	cfg := config.ReadConfig()
 
-	setupdb.Register(rootCmd, constant)
-	server.Register(rootCmd, constant)
+	setupdb.Register(rootCmd, cfg)
+	server.Register(rootCmd, cfg)
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
