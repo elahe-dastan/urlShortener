@@ -1,14 +1,17 @@
 package generator
 
-import "github.com/elahe-dastan/urlShortener_KGS/model"
+import (
+	"github.com/elahe-dastan/urlShortener_KGS/model"
+	"github.com/jinzhu/gorm"
+)
 
-const LengthOfShortURL = 2
+const LengthOfShortURL = 8
 
 const source = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-func generateURLsRec(prefix string, k int, shortURLs *[]model.ShortURL) {
+func generateURLsRec(prefix string, k int, db *gorm.DB) {
 	if k == 0 {
-		*shortURLs = append(*shortURLs, model.ShortURL{URL: prefix, IsUsed: false})
+		db.Create(&model.ShortURL{URL: prefix, IsUsed: false})
 		return
 	}
 
@@ -16,14 +19,10 @@ func generateURLsRec(prefix string, k int, shortURLs *[]model.ShortURL) {
 
 	for i := range source {
 		newPrefix := prefix + string(source[i])
-		generateURLsRec(newPrefix, k, shortURLs)
+		generateURLsRec(newPrefix, k, db)
 	}
 }
 
-func Generate() []model.ShortURL {
-	var shortURLs []model.ShortURL
-
-	generateURLsRec("", LengthOfShortURL, &shortURLs)
-
-	return shortURLs
+func Generate(db *gorm.DB) {
+	generateURLsRec("", LengthOfShortURL, db)
 }

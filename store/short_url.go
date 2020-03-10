@@ -16,14 +16,9 @@ func (url ShortURL) Save() {
 		return
 	}
 
-	urls := generator.Generate()
-
 	url.DB.Debug().AutoMigrate(&model.ShortURL{})
 
-	for _, u := range urls {
-		a := u
-		url.DB.Create(&a)
-	}
+	generator.Generate(url.DB)
 }
 
 func (url ShortURL) Choose() string {
