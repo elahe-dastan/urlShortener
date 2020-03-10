@@ -24,6 +24,5 @@ func generateURLsRec(prefix string, k int, db *gorm.DB) {
 }
 
 func Generate(db *gorm.DB) {
-
 	generateURLsRec("", LengthOfShortURL, db)
 }
