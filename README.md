@@ -61,3 +61,31 @@ your post method
 "ShortURL":"Custom short URL"
 "ExpirationTime":"A date"
 ```
+The performance of the project has been tested, here is the result
+
+```sh
+Bombarding http://localhost:8080/urls with 10 request(s) using 1 connection(s)
+ 10 / 10 [========================================================================================================================================================================================] 100.00% 47/s 0s
+Done!
+Statistics        Avg      Stdev        Max
+  Reqs/sec       256.97     147.30     371.20
+  Latency        4.55ms     4.23ms    17.22ms
+  HTTP codes:
+    1xx - 0, 2xx - 10, 3xx - 0, 4xx - 0, 5xx - 0
+    others - 0
+  Throughput:    83.45KB/s
+
+```
+```sh
+Bombarding http://localhost:8080/urls with 100 request(s) using 2 connection(s)
+ 100 / 100 [==================================================] 100.00% 166/s 0s
+Done!
+Statistics        Avg      Stdev        Max
+  Reqs/sec       199.42      59.57     311.00
+  Latency       10.15ms     7.28ms    33.94ms
+  HTTP codes:
+    1xx - 0, 2xx - 100, 3xx - 0, 4xx - 0, 5xx - 0
+    others - 0
+  Throughput:    74.76KB/s
+
+```
