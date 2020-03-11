@@ -25,7 +25,7 @@ func (url ShortURL) Choose() string {
 	var selectedURL model.ShortURL
 
 	url.DB.Raw("UPDATE short_urls SET is_used = ? WHERE url = "+
-		"(SELECT url FROM short_urls WHERE is_used = ? LIMIT 1) "+
+		"(SELECT url FROM short_urls WHERE is_used = ? LIMIT 1 FOR UPDATE) "+
 		"RETURNING *;", true, false).Scan(&selectedURL) //O(lgn)
 
 	return selectedURL.URL

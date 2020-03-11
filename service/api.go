@@ -6,14 +6,13 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"net/url"
 	"regexp"
 	"time"
 
 	"github.com/elahe-dastan/urlShortener_KGS/config"
 	"github.com/elahe-dastan/urlShortener_KGS/generator"
 	"github.com/elahe-dastan/urlShortener_KGS/middleware"
-	"github.com/elahe-dastan/urlShortener_KGS/model"
+	"github.com/elahe-dastan/urlShortener_KGS/request"
 	"github.com/elahe-dastan/urlShortener_KGS/store"
 	"github.com/gorilla/mux"
 )
@@ -35,7 +34,7 @@ func (a API) Run(cfg config.LogFile) {
 }
 
 func (a API) mapping(w http.ResponseWriter, r *http.Request) {
-	var newMap model.Map
+	var newMap request.Map
 
 	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -48,7 +47,7 @@ func (a API) mapping(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	if !CheckLongURL(newMap) {
+	if !newMap.CheckLongURL() {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -73,19 +72,20 @@ func (a API) mapping(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (a API) randomShortURL(new model.Map) model.Map {
+func (a API) randomShortURL(new request.Map) request.Map {
 	for {
 		u := a.ShortURL.Choose()
+		log.Print(u)
 		new.ShortURL = u
 
-		if err := a.Map.Insert(new); err == nil {
+		if err := a.Map.Insert(new.CreateModel()); err == nil {
 			return new
 		}
 	}
 }
 
-func (a API) customShortURL(newMap model.Map) bool {
-	if err := a.Map.Insert(newMap); err != nil {
+func (a API) customShortURL(newMap request.Map) bool {
+	if err := a.Map.Insert(newMap.CreateModel()); err != nil {
 		return false
 	}
 
@@ -111,12 +111,6 @@ func (a API) redirect(w http.ResponseWriter, r *http.Request) {
 	if err = json.NewEncoder(w).Encode(mapping); err != nil {
 		log.Fatal(err)
 	}
-}
-
-func CheckLongURL(newMap model.Map) bool {
-	_, err := url.ParseRequestURI(newMap.LongURL)
-
-	return err == nil
 }
 
 func CheckShortURL(shortURL string) bool {
