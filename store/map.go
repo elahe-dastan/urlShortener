@@ -5,10 +5,20 @@ import (
 
 	"github.com/elahe-dastan/urlShortener_KGS/model"
 	"github.com/jinzhu/gorm"
+	"github.com/prometheus/client_golang/prometheus"
 )
 
 type Map struct {
-	DB *gorm.DB
+	DB      *gorm.DB
+	Counter prometheus.Counter
+}
+
+func NewMap(DB *gorm.DB) *Map {
+	return &Map{DB: DB,
+		Counter: prometheus.NewCounter(prometheus.CounterOpts{
+			Name: "counter",
+		}),
+	}
 }
 
 // Creates a table in the database that matches the Map table and puts a trigger on it which deletes the
@@ -34,12 +44,27 @@ func (m Map) Create() {
 		"on maps " +
 		"for each row " +
 		"execute procedure delete_expired_row();")
+
+	m.DB.Exec("create or replace function give_back_url() " +
+		"returns trigger as " +
+		"$BODY$ " +
+		"begin " +
+		"update short_urls set is_used=false where url=old.short_url; " +
+		"return null; " +
+		"end; " +
+		"$BODY$ " +
+		"LANGUAGE plpgsql;" +
+		"create trigger give_back_url " +
+		"after delete " +
+		"on maps " +
+		"for each row " +
+		"execute procedure give_back_url();")
 }
 
 // Inserts a Map model in the database
 func (m Map) Insert(urlMap model.Map) error {
 	err := m.DB.Create(&urlMap).Error
-
+	m.Counter.Inc()
 	return err
 }
 

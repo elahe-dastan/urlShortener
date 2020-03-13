@@ -8,8 +8,10 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres" //adding dialect for postgres
 )
 
+const DB = "postgres"
+
 func New(config config.Database) *gorm.DB {
-	db, err := gorm.Open(config.DBName, config.ConnectionString)
+	db, err := gorm.Open(DB, config.Cstring())
 	if err != nil {
 		log.Fatalf("can not open connection to database due to the following err\n: %s", err)
 	}
