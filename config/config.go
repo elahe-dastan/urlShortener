@@ -35,6 +35,7 @@ func ReadConfig() Config {
 	}
 
 	viper.SetConfigName("config.example")
+
 	if err := viper.MergeInConfig(); err != nil {
 		log.Print("No config file found")
 	}
@@ -48,5 +49,6 @@ func ReadConfig() Config {
 }
 
 func (d Database) Cstring() string {
-	return fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s  sslmode=%s", d.Host, d.Port, d.User, d.DBName, d.Password, d.SSLmode)
+	return fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s  sslmode=%s",
+		d.Host, d.Port, d.User, d.DBName, d.Password, d.SSLmode)
 }

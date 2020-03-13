@@ -13,8 +13,8 @@ type Map struct {
 	Counter prometheus.Counter
 }
 
-func NewMap(DB *gorm.DB) *Map {
-	return &Map{DB: DB,
+func NewMap(d *gorm.DB) *Map {
+	return &Map{DB: d,
 		Counter: prometheus.NewCounter(prometheus.CounterOpts{
 			Namespace: "shorturl",
 			Name:      "counter",
@@ -66,6 +66,7 @@ func (m Map) Create() {
 func (m Map) Insert(urlMap model.Map) error {
 	err := m.DB.Create(&urlMap).Error
 	m.Counter.Inc()
+
 	return err
 }
 
