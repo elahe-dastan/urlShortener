@@ -5,7 +5,6 @@ import (
 	"github.com/elahe-dastan/urlShortener_KGS/db"
 	"github.com/elahe-dastan/urlShortener_KGS/service"
 	"github.com/elahe-dastan/urlShortener_KGS/store"
-	"github.com/jinzhu/gorm"
 	"github.com/spf13/cobra"
 )
 
@@ -18,7 +17,7 @@ func Register(root *cobra.Command, cfg config.Config) {
 				d := db.New(cfg.Database)
 				api := service.API{
 					Map:      *store.NewMap(d),
-					ShortURL: struct{ DB *gorm.DB }{DB: d}}
+					ShortURL: *store.NewShortURL(d)}
 				api.Run(cfg.Log)
 			},
 		},
