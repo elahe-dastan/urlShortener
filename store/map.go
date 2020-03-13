@@ -16,7 +16,8 @@ type Map struct {
 func NewMap(DB *gorm.DB) *Map {
 	return &Map{DB: DB,
 		Counter: prometheus.NewCounter(prometheus.CounterOpts{
-			Name: "counter",
+			Namespace: "shorturl",
+			Name:      "counter",
 		}),
 	}
 }
