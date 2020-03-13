@@ -47,7 +47,7 @@ func (a API) mapping(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	if !newMap.CheckLongURL() {
+	if !newMap.Validate() {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -78,14 +78,14 @@ func (a API) randomShortURL(new request.Map) request.Map {
 		log.Print(u)
 		new.ShortURL = u
 
-		if err := a.Map.Insert(new.CreateModel()); err == nil {
+		if err := a.Map.Insert(new.Model()); err == nil {
 			return new
 		}
 	}
 }
 
 func (a API) customShortURL(newMap request.Map) bool {
-	if err := a.Map.Insert(newMap.CreateModel()); err != nil {
+	if err := a.Map.Insert(newMap.Model()); err != nil {
 		return false
 	}
 

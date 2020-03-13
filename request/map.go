@@ -13,13 +13,13 @@ type Map struct {
 	ExpirationTime time.Time
 }
 
-func (r Map) CheckLongURL() bool {
+func (r Map) Validate() bool {
 	_, err := url.ParseRequestURI(r.LongURL)
 
 	return err == nil
 }
 
-func (r Map) CreateModel() model.Map {
+func (r Map) Model() model.Map {
 	var m model.Map
 
 	m.ShortURL = r.ShortURL

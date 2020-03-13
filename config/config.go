@@ -2,14 +2,15 @@ package config
 
 import (
 	"bytes"
+	"fmt"
 	"log"
 
 	"github.com/spf13/viper"
 )
 
 type Config struct {
-	DatabaseConfig Database `mapstructure:"dbconfig"`
-	Log            LogFile  `mapstructure:"log"`
+	Database Database `mapstructure:"db"`
+	Log      LogFile  `mapstructure:"log"`
 }
 
 type Database struct {
@@ -47,5 +48,5 @@ func ReadConfig() Config {
 }
 
 func (d Database) Cstring() string {
-	return "host=" + d.Host + " port=" + d.Port + " user=" + d.User + " dbname=" + d.DBName + " password=" + d.Password + " sslmode=" + d.SSLmode
+	return fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s  sslmode=%s", d.Host, d.Port, d.User, d.DBName, d.Password, d.SSLmode)
 }
