@@ -14,8 +14,8 @@ type ShortURL struct {
 	Histogram prometheus.Histogram
 }
 
-func NewShortURL(DB *gorm.DB) *ShortURL {
-	return &ShortURL{DB: DB,
+func NewShortURL(d *gorm.DB) ShortURL {
+	return ShortURL{DB: d,
 		Histogram: prometheus.NewHistogram(prometheus.HistogramOpts{
 			Namespace: "shorturl",
 			Name:      "histogram",

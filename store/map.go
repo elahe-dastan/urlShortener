@@ -13,8 +13,8 @@ type Map struct {
 	Counter prometheus.Counter
 }
 
-func NewMap(d *gorm.DB) *Map {
-	return &Map{DB: d,
+func NewMap(d *gorm.DB) Map {
+	return Map{DB: d,
 		Counter: prometheus.NewCounter(prometheus.CounterOpts{
 			Namespace: "shorturl",
 			Name:      "counter",

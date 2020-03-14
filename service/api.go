@@ -15,6 +15,7 @@ import (
 	"github.com/elahe-dastan/urlShortener_KGS/request"
 	"github.com/elahe-dastan/urlShortener_KGS/store"
 	"github.com/gorilla/mux"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 type API struct {
@@ -27,6 +28,13 @@ func (a API) Run(cfg config.LogFile) {
 	m := &http.ServeMux{}
 	m.HandleFunc("/urls", a.mapping)
 	m.HandleFunc("/redirect/{shortURL}", a.redirect)
+
+	p := &http.ServeMux{}
+	p.Handle("/metrics", promhttp.Handler())
+
+	go func() {
+		log.Fatal(http.ListenAndServe(":8081", p))
+	}()
 
 	c := middleware.Configuration{Config: cfg}
 	handler := c.LogRequestHandler(m)
