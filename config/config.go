@@ -34,7 +34,7 @@ func ReadConfig() Config {
 		log.Fatalf("err: %s", err)
 	}
 
-	viper.SetConfigName("config.example")
+	viper.SetConfigName("config")
 
 	if err := viper.MergeInConfig(); err != nil {
 		log.Print("No config file found")
