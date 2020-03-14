@@ -7,6 +7,7 @@ import (
 	"github.com/elahe-dastan/urlShortener_KGS/model"
 	"github.com/jinzhu/gorm"
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 )
 
 type ShortURL struct {
@@ -16,7 +17,7 @@ type ShortURL struct {
 
 func NewShortURL(d *gorm.DB) ShortURL {
 	return ShortURL{DB: d,
-		Histogram: prometheus.NewHistogram(prometheus.HistogramOpts{
+		Histogram: promauto.NewHistogram(prometheus.HistogramOpts{
 			Namespace: "shorturl",
 			Name:      "histogram",
 			//Buckets:   nil,

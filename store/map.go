@@ -6,6 +6,7 @@ import (
 	"github.com/elahe-dastan/urlShortener_KGS/model"
 	"github.com/jinzhu/gorm"
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 )
 
 type Map struct {
@@ -15,7 +16,7 @@ type Map struct {
 
 func NewMap(d *gorm.DB) Map {
 	return Map{DB: d,
-		Counter: prometheus.NewCounter(prometheus.CounterOpts{
+		Counter: promauto.NewCounter(prometheus.CounterOpts{
 			Namespace: "shorturl",
 			Name:      "counter",
 		}),
