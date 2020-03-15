@@ -3,7 +3,7 @@ package db
 import (
 	"log"
 
-	"github.com/elahe-dastan/urlShortener_KGS/config"
+	"github.com/elahe-dastan/urlShortener/config"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres" //adding dialect for postgres
 )

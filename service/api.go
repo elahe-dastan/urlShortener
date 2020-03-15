@@ -9,11 +9,11 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/elahe-dastan/urlShortener_KGS/config"
-	"github.com/elahe-dastan/urlShortener_KGS/generator"
-	"github.com/elahe-dastan/urlShortener_KGS/middleware"
-	"github.com/elahe-dastan/urlShortener_KGS/request"
-	"github.com/elahe-dastan/urlShortener_KGS/store"
+	"github.com/elahe-dastan/urlShortener/config"
+	"github.com/elahe-dastan/urlShortener/generator"
+	"github.com/elahe-dastan/urlShortener/middleware"
+	"github.com/elahe-dastan/urlShortener/request"
+	"github.com/elahe-dastan/urlShortener/store"
 	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )

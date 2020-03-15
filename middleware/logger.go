@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/elahe-dastan/urlShortener_KGS/config"
+	"github.com/elahe-dastan/urlShortener/config"
 	"github.com/felixge/httpsnoop"
 )
 

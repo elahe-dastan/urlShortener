@@ -1,7 +1,7 @@
 package generator
 
 import (
-	"github.com/elahe-dastan/urlShortener_KGS/model"
+	"github.com/elahe-dastan/urlShortener/model"
 	"github.com/jinzhu/gorm"
 )
 

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/elahe-dastan/urlShortener_KGS/cmd"
+	"github.com/elahe-dastan/urlShortener/cmd"
 )
 
 func main() {

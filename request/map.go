@@ -4,7 +4,7 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/elahe-dastan/urlShortener_KGS/model"
+	"github.com/elahe-dastan/urlShortener/model"
 )
 
 type Map struct {

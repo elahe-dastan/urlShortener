@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/elahe-dastan/urlShortener_KGS/cmd/server"
-	"github.com/elahe-dastan/urlShortener_KGS/cmd/setupdb"
-	"github.com/elahe-dastan/urlShortener_KGS/config"
+	"github.com/elahe-dastan/urlShortener/cmd/server"
+	"github.com/elahe-dastan/urlShortener/cmd/setupdb"
+	"github.com/elahe-dastan/urlShortener/config"
 	"github.com/spf13/cobra"
 )
 

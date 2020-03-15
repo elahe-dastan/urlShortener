@@ -1,9 +1,9 @@
 package setupdb
 
 import (
-	"github.com/elahe-dastan/urlShortener_KGS/config"
-	"github.com/elahe-dastan/urlShortener_KGS/db"
-	"github.com/elahe-dastan/urlShortener_KGS/store"
+	"github.com/elahe-dastan/urlShortener/config"
+	"github.com/elahe-dastan/urlShortener/db"
+	"github.com/elahe-dastan/urlShortener/store"
 	"github.com/spf13/cobra"
 )
 

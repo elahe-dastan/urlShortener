@@ -3,7 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/elahe-dastan/urlShortener_KGS/request"
+	"github.com/elahe-dastan/urlShortener/request"
 )
 
 func TestUniCode(t *testing.T) {

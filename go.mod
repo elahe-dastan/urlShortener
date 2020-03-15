@@ -1,4 +1,4 @@
-module github.com/elahe-dastan/urlShortener_KGS
+module github.com/elahe-dastan/urlShortener
 
 go 1.13
 

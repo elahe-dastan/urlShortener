@@ -3,7 +3,7 @@ package store
 import (
 	"errors"
 
-	"github.com/elahe-dastan/urlShortener_KGS/model"
+	"github.com/elahe-dastan/urlShortener/model"
 	"github.com/jinzhu/gorm"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"

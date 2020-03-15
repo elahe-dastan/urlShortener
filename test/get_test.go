@@ -3,7 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/elahe-dastan/urlShortener_KGS/service"
+	"github.com/elahe-dastan/urlShortener/service"
 )
 
 func TestInvalidCharacterInShortURL(t *testing.T) {
