@@ -34,9 +34,9 @@ func (a API) Run(cfg config.LogFile) {
 	}()
 
 	f, _ := os.OpenFile(cfg.Address, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{Output: f}))
 	e.Logger.Fatal(e.Start(":8080"))
-
 }
 
 func (a API) mapping(c echo.Context) error {
