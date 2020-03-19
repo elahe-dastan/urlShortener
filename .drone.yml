@@ -17,5 +17,5 @@ steps:
       username: rahaalvani
       password:
         from_secret: docker_password
-      repo: elahe-dastan/urlShortener
+      repo: rahaalvani/urlshortener
       dockerfile: ./Dockerfile
