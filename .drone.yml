@@ -11,3 +11,11 @@ steps:
     image: golang
     commands:
       - go test -v ./...
+  - name: docker
+    image: plugins/docker
+    settings:
+      username: rahaalvani
+      password:
+        from_secret: docker_password
+      repo: urlshortener
+      dockerfile: .

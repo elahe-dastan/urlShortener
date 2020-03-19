@@ -75,7 +75,7 @@ func (m Map) Insert(urlMap model.Map) error {
 func (m Map) Retrieve(url string) (model.Map, error) {
 	var mapping model.Map
 
-	m.DB.Raw("SELECT * from maps WHERE url = ?;", url).Scan(&mapping) //O(lgn)
+	m.DB.Raw("SELECT * from maps WHERE short_url = ?;", url).Scan(&mapping) //O(lgn)
 
 	var err error
 	if mapping.LongURL == "" {

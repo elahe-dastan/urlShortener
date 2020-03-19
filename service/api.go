@@ -1,20 +1,18 @@
 package service
 
 import (
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"regexp"
 	"time"
 
 	"github.com/elahe-dastan/urlShortener/config"
 	"github.com/elahe-dastan/urlShortener/generator"
-	"github.com/elahe-dastan/urlShortener/middleware"
 	"github.com/elahe-dastan/urlShortener/request"
 	"github.com/elahe-dastan/urlShortener/store"
-	"github.com/gorilla/mux"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
@@ -24,10 +22,9 @@ type API struct {
 }
 
 func (a API) Run(cfg config.LogFile) {
-	//router := mux.NewRouter().StrictSlash(true)
-	m := &http.ServeMux{}
-	m.HandleFunc("/urls", a.mapping)
-	m.HandleFunc("/redirect/{shortURL}", a.redirect)
+	e := echo.New()
+	e.POST("/urls", a.mapping)
+	e.GET("/redirect/:shortURL", a.redirect)
 
 	p := &http.ServeMux{}
 	p.Handle("/metrics", promhttp.Handler())
@@ -36,28 +33,21 @@ func (a API) Run(cfg config.LogFile) {
 		log.Fatal(http.ListenAndServe(":8081", p))
 	}()
 
-	c := middleware.Configuration{Config: cfg}
-	handler := c.LogRequestHandler(m)
-	log.Fatal(http.ListenAndServe(":8080", handler))
+	f, _ := os.OpenFile(cfg.Address, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{Output: f}))
+	e.Logger.Fatal(e.Start(":8080"))
+
 }
 
-func (a API) mapping(w http.ResponseWriter, r *http.Request) {
+func (a API) mapping(c echo.Context) error {
 	var newMap request.Map
 
-	reqBody, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		w.Header().Add("err", err.Error())
-		fmt.Print(w, "can not read the request due to the following err\n :%s", err)
-	}
-
-	err = json.Unmarshal(reqBody, &newMap)
-	if err != nil {
-		log.Fatal(err)
+	if err := c.Bind(&newMap); err != nil {
+		return err
 	}
 
 	if !newMap.Validate() {
-		w.WriteHeader(http.StatusBadRequest)
-		return
+		return c.String(http.StatusBadRequest, "This is not a url at all")
 	}
 
 	// this part of code doesn't look good
@@ -69,15 +59,15 @@ func (a API) mapping(w http.ResponseWriter, r *http.Request) {
 	if newMap.ShortURL == "" {
 		newMap = a.randomShortURL(newMap)
 	} else if !a.customShortURL(newMap) {
-		w.WriteHeader(http.StatusConflict)
-		return
+		return c.String(http.StatusConflict, "This short url exists")
 	}
 
-	w.WriteHeader(http.StatusCreated)
-
-	if err = json.NewEncoder(w).Encode(newMap); err != nil {
-		log.Fatal(err)
-	}
+	//w.WriteHeader(http.StatusCreated)
+	//
+	//if err = json.NewEncoder(w).Encode(newMap); err != nil {
+	//	log.Fatal(err)
+	//}
+	return c.JSON(http.StatusCreated, newMap)
 }
 
 func (a API) randomShortURL(new request.Map) request.Map {
@@ -100,25 +90,19 @@ func (a API) customShortURL(newMap request.Map) bool {
 	return true
 }
 
-func (a API) redirect(w http.ResponseWriter, r *http.Request) {
-	shortURL := mux.Vars(r)["shortURL"]
+func (a API) redirect(c echo.Context) error {
+	shortURL := c.Param("shortURL")
 	if !CheckShortURL(shortURL) {
-		w.WriteHeader(http.StatusBadRequest)
-		return
+		return c.String(http.StatusBadRequest, shortURL)
 	}
 
 	mapping, err := a.Map.Retrieve(shortURL)
 
 	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
-		return
+		return c.String(http.StatusNotFound, shortURL)
 	}
 
-	http.Redirect(w, r, mapping.LongURL, http.StatusFound)
-
-	if err = json.NewEncoder(w).Encode(mapping); err != nil {
-		log.Fatal(err)
-	}
+	return c.String(http.StatusFound, mapping.LongURL)
 }
 
 func CheckShortURL(shortURL string) bool {
