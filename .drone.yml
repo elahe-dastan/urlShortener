@@ -18,4 +18,4 @@ steps:
       password:
         from_secret: docker_password
       repo: urlshortener
-      dockerfile: /Dockerfile
+      dockerfile: ./Dockerfile
