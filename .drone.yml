@@ -13,11 +13,8 @@ steps:
       - go test -v ./...
   - name: docker
     image: plugins/docker
-    volumes:
-      - ./Dockerfile:/var/lib/docker/Dockerfile
     settings:
       username: rahaalvani
       password:
         from_secret: docker_password
       repo: urlshortener
-      dockerfile: .
