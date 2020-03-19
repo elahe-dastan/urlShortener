@@ -91,3 +91,5 @@ Statistics        Avg      Stdev        Max
   Throughput:    74.76KB/s
 
 ```
+For a small API documentation check this URL:
+https://app.swaggerhub.com/apis/elahe.dstn/urlshortener/1.0.0
