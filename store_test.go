@@ -12,10 +12,11 @@ import (
 
 //Choose a random row and check if it's is_used will be false
 func TestChoose(t *testing.T) {
+	var url model.ShortURL
+
 	u := store.NewShortURL(db.New(config.Read().Database))
 	result := u.Choose()
 
-	var url model.ShortURL
 	u.DB.Raw("SELECT * FROM short_urls WHERE url = ?", result).Scan(&url) //O(lgn)
 
 	if !url.IsUsed {
@@ -43,7 +44,7 @@ func TestMapInteraction(t *testing.T) {
 	}
 
 	if !equal(r, s) {
-		t.Errorf("Retrived row is different from inserted")
+		t.Errorf("Retrieved row is different from inserted")
 	}
 }
 
@@ -58,15 +59,19 @@ func TestSameShortURL(t *testing.T) {
 
 	m.DB.Exec("DELETE FROM maps WHERE short_url = ?", s.ShortURL)
 
-	m.Insert(s)
+	if err := m.Insert(s); err == nil {
+		t.Errorf("Cannot insert to database")
+	}
+
 	if err := m.Insert(s); err == nil {
 		t.Errorf("Same shortURL inserted")
 	}
 }
 
 func equal(f model.Map, s model.Map) bool {
-	if f.LongURL == s.LongURL && f.ShortURL == s.ShortURL && f.ExpirationTime.Unix() == f.ExpirationTime.Unix() {
+	if f.LongURL == s.LongURL && f.ShortURL == s.ShortURL && f.ExpirationTime.Unix() == s.ExpirationTime.Unix() {
 		return true
 	}
+
 	return false
 }

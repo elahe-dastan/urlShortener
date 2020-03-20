@@ -37,22 +37,26 @@ func TestInvalidShortURLLength(t *testing.T) {
 
 func TestMapping(t *testing.T) {
 	a := service.API{
-		Map:      mocks.MockMap{map[string]string{}},
+		Map:      mocks.MockMap{Maps: map[string]string{}},
 		ShortURL: store.NewShortURL(db.New(config.Read().Database)),
 	}
 
-	mapJSON := `{"LongURL":"https://www.geeksforgeeks.org","ShortURL":"aacbaaCp","ExpirationTime":"2020-06-20T15:09:00.097213128+03:30"}
+	mapJSON := `{"LongURL":"https://www.geeksforgeeks.org",
+				 "ShortURL":"aacbaaCp",
+				 "ExpirationTime":"2020-06-20T15:09:00.097213128+03:30"}
 `
 	e := echo.New()
 	e.POST("/urls", a.Mapping)
 
 	req := httptest.NewRequest(http.MethodPost, "/urls", strings.NewReader(mapJSON))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+
 	rec := httptest.NewRecorder()
 	e.ServeHTTP(rec, req)
 
 	resp := rec.Result()
 	body, err := ioutil.ReadAll(resp.Body)
+
 	if err != nil {
 		t.Errorf("Cannot read body")
 	}
@@ -60,6 +64,9 @@ func TestMapping(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, resp.StatusCode)
 
 	fmt.Println(string(body))
+	if err := resp.Body.Close(); err != nil {
+		t.Errorf("Cannot close body")
+	}
 }
 
 func TestRedirect(t *testing.T) {
