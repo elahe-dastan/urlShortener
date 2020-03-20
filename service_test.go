@@ -64,6 +64,7 @@ func TestMapping(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, resp.StatusCode)
 
 	fmt.Println(string(body))
+
 	if err := resp.Body.Close(); err != nil {
 		t.Errorf("Cannot close body")
 	}
