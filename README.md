@@ -93,3 +93,29 @@ Statistics        Avg      Stdev        Max
 ```
 For a small API documentation check this URL:
 https://app.swaggerhub.com/apis/elahe.dstn/urlshortener/1.0.0
+
+Different ideas to build a URL shortener
+I have thought about four possible ideas to build a URL shortener that will be discussed below
+
+1. Generating a random short URL while inserting :
+This approach is the easiest one in which every time the user posts a long URL and expects a short URL back
+we can generate a random short URL at that moment and insert to the database
+
+Advantages:
+Super easy to write the code 
+
+Disadvantages: 
+1- Time is taken to produce a random short URL 
+2- The short URL generated may be duplicate that returns error while inserting to the database so should be 
+regenerated and infects the performance
+
+2. Encoding actual URL :
+There are hash functions like MD% or SHA256 that we can use to generate the short URL of a long one ,this 
+functions produce a long output so we can consider just a part of it as the short URL
+
+Disadvantages:
+I think the most noticeable disadvantage of this approach is collision, we know that two long URL may have the
+same short URL using this way
+
+3. Base conversion:
+This approach 

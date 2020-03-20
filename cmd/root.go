@@ -22,7 +22,7 @@ func Execute() {
 
 	exitFailure := 1
 
-	cfg := config.ReadConfig()
+	cfg := config.Read()
 
 	setupdb.Register(rootCmd, cfg)
 	server.Register(rootCmd, cfg)

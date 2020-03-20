@@ -26,7 +26,7 @@ type LogFile struct {
 	Address string `mapstructure:"address"`
 }
 
-func ReadConfig() Config {
+func Read() Config {
 	viper.AddConfigPath(".")
 	viper.SetConfigType("yml")
 

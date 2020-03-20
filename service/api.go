@@ -9,6 +9,7 @@ import (
 
 	"github.com/elahe-dastan/urlShortener/config"
 	"github.com/elahe-dastan/urlShortener/generator"
+	"github.com/elahe-dastan/urlShortener/mocks"
 	"github.com/elahe-dastan/urlShortener/request"
 	"github.com/elahe-dastan/urlShortener/store"
 	"github.com/labstack/echo/v4"
@@ -17,14 +18,14 @@ import (
 )
 
 type API struct {
-	Map      store.Map
+	Map      mocks.Map
 	ShortURL store.ShortURL
 }
 
 func (a API) Run(cfg config.LogFile) {
 	e := echo.New()
-	e.POST("/urls", a.mapping)
-	e.GET("/redirect/:shortURL", a.redirect)
+	e.POST("/urls", a.Mapping)
+	e.GET("/redirect/:shortURL", a.Redirect)
 
 	p := &http.ServeMux{}
 	p.Handle("/metrics", promhttp.Handler())
@@ -39,7 +40,7 @@ func (a API) Run(cfg config.LogFile) {
 	e.Logger.Fatal(e.Start(":8080"))
 }
 
-func (a API) mapping(c echo.Context) error {
+func (a API) Mapping(c echo.Context) error {
 	var newMap request.Map
 
 	if err := c.Bind(&newMap); err != nil {
@@ -62,11 +63,6 @@ func (a API) mapping(c echo.Context) error {
 		return c.String(http.StatusConflict, "This short url exists")
 	}
 
-	//w.WriteHeader(http.StatusCreated)
-	//
-	//if err = json.NewEncoder(w).Encode(newMap); err != nil {
-	//	log.Fatal(err)
-	//}
 	return c.JSON(http.StatusCreated, newMap)
 }
 
@@ -90,7 +86,7 @@ func (a API) customShortURL(newMap request.Map) bool {
 	return true
 }
 
-func (a API) redirect(c echo.Context) error {
+func (a API) Redirect(c echo.Context) error {
 	shortURL := c.Param("shortURL")
 	if !CheckShortURL(shortURL) {
 		return c.String(http.StatusBadRequest, shortURL)
