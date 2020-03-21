@@ -11,8 +11,10 @@ steps:
     image: golang
     commands:
       - sleep 35
-      - psql -U postgres -d koochooloo
+      - go run setupdb
       - go test -v ./...
+    environment:
+      - URLSHORTENER_DATABASE_HOST: database
   - name: docker
     image: plugins/docker
     settings:
@@ -23,7 +25,7 @@ steps:
       dockerfile: ./Dockerfile
 services:
   - name: database
-    image: postgres:9-alpine
+    image: postgres:latest
     environment:
       POSTGRES_USER: postgres
       POSTGRES_DB: koochooloo

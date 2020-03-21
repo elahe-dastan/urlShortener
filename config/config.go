@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/spf13/viper"
 )
@@ -39,6 +40,10 @@ func Read() Config {
 	if err := viper.MergeInConfig(); err != nil {
 		log.Print("No config file found")
 	}
+
+	viper.SetEnvPrefix("urlshortener")
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_", "-", "_"))
+	viper.AutomaticEnv()
 
 	var cfg Config
 	if err := viper.Unmarshal(&cfg); err != nil {
