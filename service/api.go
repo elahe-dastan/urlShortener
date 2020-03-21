@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -97,6 +98,10 @@ func (a API) Redirect(c echo.Context) error {
 }
 
 func (a API) CheckShortURL(shortURL string) bool {
+	fmt.Println("short url length")
+	fmt.Println(len(shortURL))
+	fmt.Println("cpnfig length")
+	fmt.Println(a.URL.Length)
 	//check the length of shortURL
 	if len(shortURL) != a.URL.Length {
 		return false
