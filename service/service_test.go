@@ -10,6 +10,7 @@ import (
 
 	"github.com/elahe-dastan/urlShortener/config"
 	"github.com/elahe-dastan/urlShortener/db"
+	"github.com/elahe-dastan/urlShortener/mock"
 	"github.com/elahe-dastan/urlShortener/store"
 	"github.com/labstack/echo/v4"
 	"github.com/magiconair/properties/assert"
@@ -82,4 +83,11 @@ func TestRedirect(t *testing.T) {
 	e.ServeHTTP(rec, req)
 
 	assert.Equal(t, http.StatusFound, rec.Code)
+}
+
+func TestDBInteraction(t *testing.T) {
+	_ = API{
+		Map:      mock.Map{Maps: map[string]string{}},
+		ShortURL: store.NewShortURL(db.New(config.Read().Database)),
+	}
 }
