@@ -18,7 +18,7 @@ import (
 type API struct {
 	Map      store.Mapping
 	ShortURL store.ShortURL
-	Url      config.ShortURL
+	URL      config.ShortURL
 }
 
 func (a API) Run(cfg config.LogFile) {
@@ -98,7 +98,7 @@ func (a API) Redirect(c echo.Context) error {
 
 func (a API) CheckShortURL(shortURL string) bool {
 	//check the length of shortURL
-	if len(shortURL) != a.Url.Length {
+	if len(shortURL) != a.URL.Length {
 		return false
 	}
 
