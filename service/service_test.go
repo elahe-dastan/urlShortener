@@ -73,6 +73,7 @@ func TestRedirect(t *testing.T) {
 	a := API{
 		Map:      store.NewMap(db.New(config.Read().Database)),
 		ShortURL: store.NewShortURL(db.New(config.Read().Database)),
+		URL:      config.Read().URL,
 	}
 
 	e := echo.New()
