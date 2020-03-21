@@ -5,7 +5,7 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-const LengthOfShortURL = 3
+const LengthOfShortURL = 2
 
 const source = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
