@@ -10,6 +10,8 @@ steps:
   - name: test
     image: golang
     commands:
+      - sleep 15
+      - psql -U postgres -d koochooloo
       - go test -v ./...
   - name: docker
     image: plugins/docker
@@ -20,5 +22,8 @@ steps:
       repo: rahaalvani/urlshortener
       dockerfile: ./Dockerfile
 services:
-  - name: postgres
-  - image: postgres
+  - name: database
+    image: postgres:9-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: koochooloo
