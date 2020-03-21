@@ -10,7 +10,7 @@ steps:
   - name: test
     image: golang
     commands:
-      - go run setupdb
+      - go run main.go setupdb
       - go test -v ./...
     environment:
       URLSHORTENER_DATABASE_HOST: "database"
