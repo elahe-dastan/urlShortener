@@ -41,7 +41,7 @@ func TestMapping(t *testing.T) {
 	}
 
 	mapJSON := `{"LongURL":"https://www.geeksforgeeks.org",
-				 "ShortURL":"as",
+				 "ShortURL":"ahs",
 				 "ExpirationTime":"2020-06-20T15:09:00.097213128+03:30"}
 `
 	e := echo.New()
@@ -78,7 +78,7 @@ func TestRedirect(t *testing.T) {
 	e := echo.New()
 	e.GET("/redirect/:shortURL", a.Redirect)
 
-	req := httptest.NewRequest(http.MethodGet, "/redirect/as", nil)
+	req := httptest.NewRequest(http.MethodGet, "/redirect/ahs", nil)
 	rec := httptest.NewRecorder()
 	e.ServeHTTP(rec, req)
 
