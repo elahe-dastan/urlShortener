@@ -12,6 +12,7 @@ import (
 type Config struct {
 	Database Database `mapstructure:"db"`
 	Log      LogFile  `mapstructure:"log"`
+	URL      ShortURL `mapstructure:"url"`
 }
 
 type Database struct {
@@ -25,6 +26,10 @@ type Database struct {
 
 type LogFile struct {
 	Address string `mapstructure:"address"`
+}
+
+type ShortURL struct {
+	Length int `mapstructure:"length"`
 }
 
 func Read() Config {

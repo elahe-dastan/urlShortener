@@ -3,11 +3,16 @@ package store
 import (
 	"errors"
 
+	"github.com/elahe-dastan/urlShortener/metric"
 	"github.com/elahe-dastan/urlShortener/model"
 	"github.com/jinzhu/gorm"
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promauto"
 )
+
+type Mapping interface {
+	Insert(urlMap model.Map) error
+	Retrieve(url string) (model.Map, error)
+}
 
 type Map struct {
 	DB      *gorm.DB
@@ -16,10 +21,7 @@ type Map struct {
 
 func NewMap(d *gorm.DB) Map {
 	return Map{DB: d,
-		Counter: promauto.NewCounter(prometheus.CounterOpts{
-			Namespace: "shorturl",
-			Name:      "counter",
-		}),
+		Counter: metric.NewCounter(),
 	}
 }
 

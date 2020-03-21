@@ -1,4 +1,4 @@
-package main
+package store
 
 import (
 	"testing"
@@ -7,14 +7,13 @@ import (
 	"github.com/elahe-dastan/urlShortener/config"
 	"github.com/elahe-dastan/urlShortener/db"
 	"github.com/elahe-dastan/urlShortener/model"
-	"github.com/elahe-dastan/urlShortener/store"
 )
 
 //Choose a random row and check if it's is_used will be false
 func TestChoose(t *testing.T) {
 	var url model.ShortURL
 
-	u := store.NewShortURL(db.New(config.Read().Database))
+	u := NewShortURL(db.New(config.Read().Database))
 	result := u.Choose()
 
 	u.DB.Raw("SELECT * FROM short_urls WHERE url = ?", result).Scan(&url) //O(lgn)
@@ -25,7 +24,7 @@ func TestChoose(t *testing.T) {
 }
 
 func TestMapInteraction(t *testing.T) {
-	m := store.NewMap(db.New(config.Read().Database))
+	m := NewMap(db.New(config.Read().Database))
 	s := model.Map{
 		LongURL:        "LongURLForTest",
 		ShortURL:       "ShortURLForTest",
@@ -50,7 +49,7 @@ func TestMapInteraction(t *testing.T) {
 
 //Insert same short URL
 func TestSameShortURL(t *testing.T) {
-	m := store.NewMap(db.New(config.Read().Database))
+	m := NewMap(db.New(config.Read().Database))
 	s := model.Map{
 		LongURL:        "LongURLForTestingSameShortURL",
 		ShortURL:       "Same",

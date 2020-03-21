@@ -17,7 +17,8 @@ func Register(root *cobra.Command, cfg config.Config) {
 				d := db.New(cfg.Database)
 				api := service.API{
 					Map:      store.NewMap(d),
-					ShortURL: store.NewShortURL(d)}
+					ShortURL: store.NewShortURL(d),
+					Length:   cfg.URL}
 				api.Run(cfg.Log)
 			},
 		},

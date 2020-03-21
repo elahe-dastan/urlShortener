@@ -1,11 +1,10 @@
 package generator
 
 import (
+	"github.com/elahe-dastan/urlShortener/config"
 	"github.com/elahe-dastan/urlShortener/model"
 	"github.com/jinzhu/gorm"
 )
-
-const LengthOfShortURL = 2
 
 const source = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
@@ -23,6 +22,6 @@ func generateURLsRec(prefix string, k int, db *gorm.DB) {
 	}
 }
 
-func Generate(db *gorm.DB) {
-	generateURLsRec("", LengthOfShortURL, db)
+func Generate(db *gorm.DB, u config.ShortURL) {
+	generateURLsRec("", u.Length, db)
 }

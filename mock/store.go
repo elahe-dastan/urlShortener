@@ -1,16 +1,8 @@
-package mocks
+package mock
 
 import (
 	"github.com/elahe-dastan/urlShortener/model"
 )
-
-type Map interface {
-	Insert(urlMap model.Map) error
-	Retrieve(url string) (model.Map, error)
-}
-
-type ShortURL interface {
-}
 
 type MockMap struct {
 	Maps map[string]string

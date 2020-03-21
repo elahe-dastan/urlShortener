@@ -1,4 +1,4 @@
-package main
+package service
 
 import (
 	"fmt"
@@ -10,32 +10,31 @@ import (
 
 	"github.com/elahe-dastan/urlShortener/config"
 	"github.com/elahe-dastan/urlShortener/db"
-	"github.com/elahe-dastan/urlShortener/service"
 	"github.com/elahe-dastan/urlShortener/store"
 	"github.com/labstack/echo/v4"
 	"github.com/magiconair/properties/assert"
 )
 
-func TestInvalidCharacterInShortURL(t *testing.T) {
-	shortURL := "34"
-	result := service.CheckShortURL(shortURL)
-
-	if result == true {
-		t.Errorf("Validtion was incorrect")
-	}
-}
-
-func TestInvalidShortURLLength(t *testing.T) {
-	shortURL := "fsg"
-	result := service.CheckShortURL(shortURL)
-
-	if result == true {
-		t.Errorf("Validtion was incorrect")
-	}
-}
+//func TestInvalidCharacterInShortURL(t *testing.T) {
+//	shortURL := "34"
+//	result := CheckShortURL(shortURL)
+//
+//	if result == true {
+//		t.Errorf("Validtion was incorrect")
+//	}
+//}
+//
+//func TestInvalidShortURLLength(t *testing.T) {
+//	shortURL := "fsg"
+//	result := CheckShortURL(shortURL)
+//
+//	if result == true {
+//		t.Errorf("Validtion was incorrect")
+//	}
+//}
 
 func TestMapping(t *testing.T) {
-	a := service.API{
+	a := API{
 		Map:      store.NewMap(db.New(config.Read().Database)),
 		ShortURL: store.NewShortURL(db.New(config.Read().Database)),
 	}
@@ -70,7 +69,7 @@ func TestMapping(t *testing.T) {
 }
 
 func TestRedirect(t *testing.T) {
-	a := service.API{
+	a := API{
 		Map:      store.NewMap(db.New(config.Read().Database)),
 		ShortURL: store.NewShortURL(db.New(config.Read().Database)),
 	}

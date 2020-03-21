@@ -19,7 +19,7 @@ func Register(root *cobra.Command, cfg config.Config) {
 
 				//This part of code generates all the random short ULRs possible and saves them into the database
 				//This code executes only if the table containing the short URLs doesn't exist
-				u.Save()
+				u.Save(cfg.URL)
 
 				//Creates a table for mapping each long URL to a short URL if not present in the database
 				m.Create()

@@ -1,13 +1,11 @@
-package main
+package request
 
 import (
 	"testing"
-
-	"github.com/elahe-dastan/urlShortener/request"
 )
 
 func TestUniCode(t *testing.T) {
-	newMap := request.Map{LongURL: "https://fa.wikipedia.org/wiki/%D8%AA%D9%87%D8%B1%D8%A7%D9%86"}
+	newMap := Map{LongURL: "https://fa.wikipedia.org/wiki/%D8%AA%D9%87%D8%B1%D8%A7%D9%86"}
 	result := newMap.Validate()
 
 	if result == false {
@@ -16,7 +14,7 @@ func TestUniCode(t *testing.T) {
 }
 
 func TestEmptyURL(t *testing.T) {
-	newMap := request.Map{LongURL: ""}
+	newMap := Map{LongURL: ""}
 	result := newMap.Validate()
 
 	if result == true {
@@ -25,7 +23,7 @@ func TestEmptyURL(t *testing.T) {
 }
 
 func TestInvalidURL(t *testing.T) {
-	newMap := request.Map{LongURL: "sdf"}
+	newMap := Map{LongURL: "sdf"}
 	result := newMap.Validate()
 
 	if result == true {

@@ -8,18 +8,17 @@ import (
 	"time"
 
 	"github.com/elahe-dastan/urlShortener/config"
-	"github.com/elahe-dastan/urlShortener/generator"
-	"github.com/elahe-dastan/urlShortener/mocks"
+	"github.com/elahe-dastan/urlShortener/metric"
 	"github.com/elahe-dastan/urlShortener/request"
 	"github.com/elahe-dastan/urlShortener/store"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 type API struct {
-	Map      mocks.Map
+	Map      store.Mapping
 	ShortURL store.ShortURL
+	Length   config.ShortURL
 }
 
 func (a API) Run(cfg config.LogFile) {
@@ -27,11 +26,8 @@ func (a API) Run(cfg config.LogFile) {
 	e.POST("/urls", a.Mapping)
 	e.GET("/redirect/:shortURL", a.Redirect)
 
-	p := &http.ServeMux{}
-	p.Handle("/metrics", promhttp.Handler())
-
 	go func() {
-		log.Fatal(http.ListenAndServe(":8081", p))
+		metric.Monitor()
 	}()
 
 	f, _ := os.OpenFile(cfg.Address, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
@@ -51,7 +47,6 @@ func (a API) Mapping(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "This is not a url at all")
 	}
 
-	// this part of code doesn't look good
 	if newMap.ExpirationTime.Before(time.Now()) {
 		var duration time.Duration = 5
 		newMap.ExpirationTime = time.Now().Add(duration * time.Minute)
@@ -88,7 +83,7 @@ func (a API) customShortURL(newMap request.Map) bool {
 
 func (a API) Redirect(c echo.Context) error {
 	shortURL := c.Param("shortURL")
-	if !CheckShortURL(shortURL) {
+	if !a.CheckShortURL(shortURL) {
 		return c.String(http.StatusBadRequest, shortURL)
 	}
 
@@ -101,9 +96,9 @@ func (a API) Redirect(c echo.Context) error {
 	return c.String(http.StatusFound, mapping.LongURL)
 }
 
-func CheckShortURL(shortURL string) bool {
+func (a API) CheckShortURL(shortURL string) bool {
 	//check the length of shortURL
-	if len(shortURL) != generator.LengthOfShortURL {
+	if len(shortURL) != a.Length.Length {
 		return false
 	}
 
