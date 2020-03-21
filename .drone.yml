@@ -19,3 +19,6 @@ steps:
         from_secret: docker_password
       repo: rahaalvani/urlshortener
       dockerfile: ./Dockerfile
+services:
+  - name: postgres
+  - image: postgres

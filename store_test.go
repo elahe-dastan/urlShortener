@@ -59,7 +59,7 @@ func TestSameShortURL(t *testing.T) {
 
 	m.DB.Exec("DELETE FROM maps WHERE short_url = ?", s.ShortURL)
 
-	if err := m.Insert(s); err == nil {
+	if err := m.Insert(s); err != nil {
 		t.Errorf("Cannot insert to database")
 	}
 
