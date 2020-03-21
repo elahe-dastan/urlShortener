@@ -12,7 +12,7 @@ steps:
     commands:
       - go run main.go setupdb
     environment:
-      URLSHORTENER_URL_Length: 3
+      URLSHORTENER_URL_LENGTH: 3
       URLSHORTENER_DB_HOST: "database"
   - name: test
     image: golang
