@@ -10,11 +10,10 @@ steps:
   - name: test
     image: golang
     commands:
-      - sleep 35
       - go run setupdb
       - go test -v ./...
     environment:
-      - URLSHORTENER_DATABASE_HOST: "database"
+      URLSHORTENER_DATABASE_HOST: "database"
   - name: docker
     image: plugins/docker
     settings:
