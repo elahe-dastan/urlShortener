@@ -13,7 +13,7 @@ steps:
       - go run main.go setupdb
       - go test -v ./...
     environment:
-      URLSHORTENER_DATABASE_HOST: "database"
+      URLSHORTENER_DB_HOST: "database"
   - name: docker
     image: plugins/docker
     settings:
