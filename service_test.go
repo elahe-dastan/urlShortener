@@ -10,7 +10,6 @@ import (
 
 	"github.com/elahe-dastan/urlShortener/config"
 	"github.com/elahe-dastan/urlShortener/db"
-	"github.com/elahe-dastan/urlShortener/mocks"
 	"github.com/elahe-dastan/urlShortener/service"
 	"github.com/elahe-dastan/urlShortener/store"
 	"github.com/labstack/echo/v4"
@@ -37,7 +36,7 @@ func TestInvalidShortURLLength(t *testing.T) {
 
 func TestMapping(t *testing.T) {
 	a := service.API{
-		Map:      mocks.MockMap{Maps: map[string]string{}},
+		Map:      store.NewMap(db.New(config.Read().Database)),
 		ShortURL: store.NewShortURL(db.New(config.Read().Database)),
 	}
 
