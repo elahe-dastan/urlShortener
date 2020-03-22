@@ -16,7 +16,6 @@ func Register(root *cobra.Command, cfg config.Config) {
 		Use:   "setupdb",
 		Short: "Manages database, creates and fills tables if don't exist",
 		Run: func(cmd *cobra.Command, args []string) {
-
 			d := db.New(cfg.Database)
 			m := store.NewMap(d)
 			l, _ := cmd.Flags().GetInt("length")
