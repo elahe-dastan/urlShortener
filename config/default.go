@@ -10,6 +10,4 @@ db:
   sslmode: disable
 log:
   address: /home/raha/Documents/log.txt
-url:
-  length: 8
 `

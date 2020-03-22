@@ -10,9 +10,8 @@ steps:
   - name: migration
     image: golang
     commands:
-      - go run main.go setupdb
+      - go run main.go setupdb -l 3
     environment:
-      URLSHORTENER_URL_LENGTH: 3
       URLSHORTENER_DB_HOST: "database"
   - name: test
     image: golang

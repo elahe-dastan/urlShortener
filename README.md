@@ -118,4 +118,21 @@ I think the most noticeable disadvantage of this approach is collision, we know 
 same short URL using this way
 
 3. Base conversion:
-This approach 
+This approach has the most light weight database because we don't save the short URL at all when we insert a 
+long URL we get it's ID back and based on the number of characters we want to use in our short URL we can
+convert this ID to a short URL and when searching for a short URL we should first convert it to ID 
+
+Disadvantage:
+The base Conversion takes time for both inserting and redirecting operation
+
+PM: I have a small implementation for this idea in c#, here is the link:
+https://github.com/elahe-dastan/urlshortener_alibaba
+
+4. Generating keys offline:
+In this approach we generate all the possible short URLs with a specified length and keep them in a table
+with a boolean column that shows if we have used a short URL or not every time we want to insert a long URL 
+we can pick up on the unused short URLs from this table 
+
+Advantages: No time is taken to generate a short URL
+
+Disadvantage: Operation with database to pick up a short URL takes time

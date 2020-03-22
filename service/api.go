@@ -19,7 +19,6 @@ import (
 type API struct {
 	Map      store.Mapping
 	ShortURL store.ShortURL
-	URL      config.ShortURL
 }
 
 func (a API) Run(cfg config.LogFile) {
@@ -45,7 +44,7 @@ func (a API) Mapping(c echo.Context) error {
 	}
 
 	if !newMap.Validate() {
-		return c.String(http.StatusBadRequest, "This is not a url at all")
+		return echo.NewHTTPError(http.StatusBadRequest, "This is not a url at all")
 	}
 
 	if newMap.ExpirationTime.Before(time.Now()) {
@@ -56,7 +55,7 @@ func (a API) Mapping(c echo.Context) error {
 	if newMap.ShortURL == "" {
 		newMap = a.randomShortURL(newMap)
 	} else if !a.customShortURL(newMap) {
-		return c.String(http.StatusConflict, "This short url exists")
+		return echo.NewHTTPError(http.StatusConflict, "This short url exists")
 	}
 
 	return c.JSON(http.StatusCreated, newMap)
@@ -84,26 +83,26 @@ func (a API) customShortURL(newMap request.Map) bool {
 
 func (a API) Redirect(c echo.Context) error {
 	shortURL := c.Param("shortURL")
-	if !a.CheckShortURL(shortURL) {
-		return c.String(http.StatusBadRequest, shortURL)
-	}
+	//if !a.CheckShortURL(shortURL) {
+	//	return echo.NewHTTPError(http.StatusBadRequest, shortURL)
+	//}
 
 	mapping, err := a.Map.Retrieve(shortURL)
 
 	if err != nil {
-		return c.String(http.StatusNotFound, shortURL)
+		return echo.NewHTTPError(http.StatusNotFound, shortURL)
 	}
 
-	return c.String(http.StatusFound, mapping.LongURL)
+	return echo.NewHTTPError(http.StatusFound, mapping.LongURL)
 }
 
 func (a API) CheckShortURL(shortURL string) bool {
 	fmt.Println("short url length")
 	fmt.Println(len(shortURL))
 	fmt.Println("cpnfig length")
-	fmt.Println(a.URL.Length)
+	fmt.Println(a.ShortURL.Length)
 	//check the length of shortURL
-	if len(shortURL) != a.URL.Length {
+	if len(shortURL) != a.ShortURL.Length {
 		return false
 	}
 
