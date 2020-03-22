@@ -109,6 +109,15 @@ Disadvantages:
 2- The short URL generated may be duplicate that returns error while inserting to the database so should be 
 regenerated and infects the performance
 
+My time complexity estimation:
+Generating short URL = O(length of url)
+Inserting to database = O(log size of database) : short URL should be unique and generating it randomly can lead to a duplication 
+so we have to put a unique constraint on short URL
+
+My database size estimation:
+We need only one table that has two columns :
+short URL as primary key and long url that matches it
+
 2. Encoding actual URL :
 There are hash functions like MD% or SHA256 that we can use to generate the short URL of a long one ,this 
 functions produce a long output so we can consider just a part of it as the short URL
@@ -116,6 +125,15 @@ functions produce a long output so we can consider just a part of it as the shor
 Disadvantages:
 I think the most noticeable disadvantage of this approach is collision, we know that two long URL may have the
 same short URL using this way
+
+My time complexity estimation:
+Generating short URL = O(1)
+Inserting to database = O(log size of database) : short URL should be unique and generating it by hash functions can lead to a 
+duplication so we have to put a unique constraint on short URL
+
+My database size estimation:
+We need only one table that has two columns :
+short URL as primary key and long url that matches it
 
 3. Base conversion:
 This approach has the most light weight database because we don't save the short URL at all when we insert a 
@@ -128,6 +146,14 @@ The base Conversion takes time for both inserting and redirecting operation
 PM: I have a small implementation for this idea in c#, here is the link:
 https://github.com/elahe-dastan/urlshortener_alibaba
 
+My time complexity estimation:
+Generating short URL = O(ID/base)
+Inserting to database = O(1) : 
+
+My database size estimation:
+We need only one table that has two columns :
+ID as primary key and long url that matches it
+
 4. Generating keys offline:
 In this approach we generate all the possible short URLs with a specified length and keep them in a table
 with a boolean column that shows if we have used a short URL or not every time we want to insert a long URL 
@@ -136,3 +162,11 @@ we can pick up on the unused short URLs from this table
 Advantages: No time is taken to generate a short URL
 
 Disadvantage: Operation with database to pick up a short URL takes time
+
+My time complexity estimation:
+Retrieving a short URL = O(used short URLs)
+Inserting to database = O(1) : 
+
+My database size estimation:
+We need only one table that has two columns :
+ID as primary key and long url that matches it

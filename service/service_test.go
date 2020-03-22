@@ -123,5 +123,4 @@ func TestDBInteraction(t *testing.T) {
 	ec.ServeHTTP(reco, requ)
 
 	assert.Equal(t, http.StatusFound, reco.Code)
-
 }
