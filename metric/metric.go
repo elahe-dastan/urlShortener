@@ -15,10 +15,10 @@ func Monitor() {
 	log.Fatal(http.ListenAndServe(":8081", p))
 }
 
-func NewHistogram() prometheus.Histogram {
+func NewHistogram(name string) prometheus.Histogram {
 	h := prometheus.NewHistogram(prometheus.HistogramOpts{
 		Namespace: "shorturl",
-		Name:      "histogram",
+		Name:      name,
 	})
 
 	if err := prometheus.Register(h); err != nil {
@@ -32,10 +32,10 @@ func NewHistogram() prometheus.Histogram {
 	return h
 }
 
-func NewCounter() prometheus.Counter {
+func NewCounter(name string) prometheus.Counter {
 	c := prometheus.NewCounter(prometheus.CounterOpts{
 		Namespace: "shorturl",
-		Name:      "counter",
+		Name:      name,
 	})
 
 	if err := prometheus.Register(c); err != nil {

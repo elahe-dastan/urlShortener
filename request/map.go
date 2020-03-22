@@ -1,10 +1,11 @@
 package request
 
 import (
-	"net/url"
 	"time"
 
 	"github.com/elahe-dastan/urlShortener/model"
+	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"github.com/go-ozzo/ozzo-validation/v4/is"
 )
 
 type Map struct {
@@ -14,7 +15,9 @@ type Map struct {
 }
 
 func (r Map) Validate() bool {
-	_, err := url.ParseRequestURI(r.LongURL)
+	err := validation.ValidateStruct(&r,
+		validation.Field(&r.LongURL, validation.Required, is.URL))
+	//_, err := url.ParseRequestURI(r.LongURL)
 
 	return err == nil
 }

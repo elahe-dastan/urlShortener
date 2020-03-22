@@ -21,7 +21,7 @@ type Map struct {
 
 func NewMap(d *gorm.DB) Map {
 	return Map{DB: d,
-		Counter: metric.NewCounter(),
+		Counter: metric.NewCounter("counter"),
 	}
 }
 
