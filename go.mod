@@ -3,13 +3,9 @@ module github.com/elahe-dastan/urlShortener
 go 1.13
 
 require (
-	github.com/felixge/httpsnoop v1.0.1
 	github.com/go-ozzo/ozzo-validation/v4 v4.1.0
-	github.com/gorilla/mux v1.7.4
-	github.com/jinzhu/gorm v1.9.12
 	github.com/labstack/echo/v4 v4.1.15
 	github.com/lib/pq v1.1.1
-	github.com/magiconair/properties v1.8.1
 	github.com/pelletier/go-toml v1.6.0 // indirect
 	github.com/prometheus/client_golang v0.9.3
 	github.com/spf13/afero v1.2.2 // indirect
