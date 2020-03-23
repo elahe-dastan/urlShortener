@@ -18,7 +18,7 @@ func TestChoose(t *testing.T) {
 	u := NewShortURL(db.New(config.Read().Database))
 	result := u.Choose()
 
-	err := u.DB.QueryRow("SELECT * FROM short_url WHERE url = $1", result).Scan(&url)
+	err := u.DB.QueryRow("SELECT * FROM short_url WHERE url = $1", result).Scan(&url.URL, url.IsUsed)
 	if err != nil {
 		log.Fatal(err)
 	}
