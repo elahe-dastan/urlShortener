@@ -164,9 +164,16 @@ Advantages: No time is taken to generate a short URL
 Disadvantage: Operation with database to pick up a short URL takes time
 
 My time complexity estimation:
+For custom short URLs:
+Checking short URL duplication = O(log size of KGS)
+Inserting to database = O(1) : 
+For others:
 Retrieving a short URL = O(used short URLs)
 Inserting to database = O(1) : 
 
 My database size estimation:
-We need only one table that has two columns :
-ID as primary key and long url that matches it
+We need two tables:
+1. To store the KGS that has two columns :
+Short URL and a column that shows if the short URL has been used or not
+2. To store the short URL and the long one which it points to that has three columns:
+ID as primary key, short URL and long URL that matches it

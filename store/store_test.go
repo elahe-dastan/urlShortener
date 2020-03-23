@@ -7,6 +7,7 @@ import (
 	"github.com/elahe-dastan/urlShortener/config"
 	"github.com/elahe-dastan/urlShortener/db"
 	"github.com/elahe-dastan/urlShortener/model"
+	"github.com/stretchr/testify/assert"
 )
 
 //Choose a random row and check if it's is_used will be false
@@ -18,9 +19,7 @@ func TestChoose(t *testing.T) {
 
 	u.DB.Raw("SELECT * FROM short_urls WHERE url = ?", result).Scan(&url) //O(lgn)
 
-	if !url.IsUsed {
-		t.Errorf("After choosing a short URL it's is_used doesn't change properly")
-	}
+	assert.True(t, url.IsUsed, "After choosing a short URL it's is_used doesn't change properly")
 }
 
 func TestMapInteraction(t *testing.T) {
@@ -33,14 +32,10 @@ func TestMapInteraction(t *testing.T) {
 
 	m.DB.Exec("DELETE FROM maps WHERE long_url = ?", s.LongURL)
 
-	if err := m.Insert(s); err != nil {
-		t.Errorf("Insert is not done properly")
-	}
+	assert.Nil(t, m.Insert(s), "Insert is not done properly")
 
 	r, e := m.Retrieve(s.ShortURL)
-	if e != nil {
-		t.Errorf("Cannot retrieve from database")
-	}
+	assert.Nil(t, e, "Cannot retrieve from database")
 
 	if !equal(r, s) {
 		t.Errorf("Retrieved row is different from inserted")
@@ -58,13 +53,9 @@ func TestSameShortURL(t *testing.T) {
 
 	m.DB.Exec("DELETE FROM maps WHERE short_url = ?", s.ShortURL)
 
-	if err := m.Insert(s); err != nil {
-		t.Errorf("Cannot insert to database")
-	}
+	assert.Nil(t, m.Insert(s), "Cannot insert to database")
 
-	if err := m.Insert(s); err == nil {
-		t.Errorf("Same shortURL inserted")
-	}
+	assert.NotNil(t, m.Insert(s), "Same shortURL inserted")
 }
 
 func equal(f model.Map, s model.Map) bool {

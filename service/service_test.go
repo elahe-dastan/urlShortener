@@ -10,7 +10,7 @@ import (
 
 	"github.com/elahe-dastan/urlShortener/mock"
 	"github.com/labstack/echo/v4"
-	"github.com/magiconair/properties/assert"
+	"github.com/stretchr/testify/assert"
 )
 
 //func TestInvalidCharacterInShortURL(t *testing.T) {
@@ -103,17 +103,13 @@ func TestDBInteraction(t *testing.T) {
 	resp := rec.Result()
 	body, err := ioutil.ReadAll(resp.Body)
 
-	if err != nil {
-		t.Errorf("Cannot read body")
-	}
+	assert.Nil(t, err, "Cannot read body")
 
 	assert.Equal(t, http.StatusCreated, resp.StatusCode)
 
 	fmt.Println(string(body))
 
-	if err := resp.Body.Close(); err != nil {
-		t.Errorf("Cannot close body")
-	}
+	assert.Nil(t, resp.Body.Close(), "Cannot close body")
 
 	ec := echo.New()
 	ec.GET("/redirect/:shortURL", a.Redirect)
