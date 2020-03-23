@@ -18,7 +18,10 @@ func TestChoose(t *testing.T) {
 	u := NewShortURL(db.New(config.Read().Database))
 	result := u.Choose()
 
-	u.DB.QueryRow("SELECT * FROM short_urls WHERE url = $1", result).Scan(&url) //O(lgn)
+	err := u.DB.QueryRow("SELECT * FROM short_urls WHERE url = $1", result).Scan(&url)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	assert.True(t, url.IsUsed, "After choosing a short URL it's is_used doesn't change properly")
 }

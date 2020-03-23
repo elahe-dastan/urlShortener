@@ -92,10 +92,12 @@ func (m Map) Insert(urlMap model.Map) error {
 func (m Map) Retrieve(url string) (model.Map, error) {
 	var mapping model.Map
 
-	m.DB.QueryRow("SELECT * from map WHERE short_url = $1;", url).Scan(
-		&mapping.ID, &mapping.LongURL, &mapping.ShortURL, &mapping.ExpirationTime) //O(lgn)
+	err := m.DB.QueryRow("SELECT * from map WHERE short_url = $1;", url).Scan(
+		&mapping.ID, &mapping.LongURL, &mapping.ShortURL, &mapping.ExpirationTime)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	var err error
 	if mapping.LongURL == "" {
 		err = errors.New("this short URL doesn't exist in the database")
 	}
