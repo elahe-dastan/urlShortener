@@ -57,3 +57,19 @@ func (url ShortURL) Choose() string {
 
 	return selectedURL.URL
 }
+
+func (url ShortURL) Unique(shortURL string) bool {
+	var s model.ShortURL
+	err := url.DB.QueryRow("UPDATE short_url SET is_used = $1 WHERE url = $2 AND is_used = $3",
+		true, shortURL, false).Scan(s.URL, s.IsUsed)
+	if err == nil {
+		return true
+	}
+
+	_, err = url.DB.Exec("INSERT into short_url VALUES ($1, true )", shortURL)
+	if err == nil {
+		return true
+	}
+
+	return false
+}

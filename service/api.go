@@ -74,6 +74,10 @@ func (a API) randomShortURL(new request.Map) request.Map {
 }
 
 func (a API) customShortURL(newMap request.Map) bool {
+	if !a.ShortURL.Unique(newMap.ShortURL) {
+		return false
+	}
+
 	if err := a.Map.Insert(newMap.Model()); err != nil {
 		return false
 	}
