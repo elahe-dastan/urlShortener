@@ -82,6 +82,7 @@ func (m Map) Create() {
 func (m Map) Insert(urlMap model.Map) error {
 	_, err := m.DB.Exec("INSERT INTO map (long_url, short_url, expiration_time) VALUES ($1, $2, $3)",
 		urlMap.LongURL, urlMap.ShortURL, urlMap.ExpirationTime)
+
 	m.Counter.Inc()
 
 	return err
