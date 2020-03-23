@@ -32,7 +32,7 @@ func (url ShortURL) Save() {
 		"is_used boolean NOT NULL" +
 		");")
 	if err != nil {
-		log.Println("Cannot create short url table due to the following error", err.Error())
+		log.Printf("Cannot create short url table due to the following error\n %s", err.Error())
 	}
 
 	generator.Generate(url.DB, url.Length)
@@ -52,7 +52,7 @@ func (url ShortURL) Choose() string {
 		"(SELECT url FROM short_url WHERE is_used = $2 LIMIT 1 FOR UPDATE) "+
 		"RETURNING *;", true, false).Scan(&selectedURL.URL, &selectedURL.IsUsed)
 	if err != nil {
-		log.Println("Cannot select row from short url table due to the following error\n %s", err)
+		log.Printf("Cannot select row from short url table due to the following error\n %s", err)
 	}
 
 	return selectedURL.URL

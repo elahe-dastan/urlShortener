@@ -11,7 +11,7 @@ func generateURLsRec(prefix string, k int, db *sql.DB) {
 	if k == 0 {
 		_, err := db.Exec("INSERT INTO short_url VALUES ($1, $2)", prefix, false)
 		if err != nil {
-			log.Println("Cannot insert row of KGS due to the following error\n %s", err)
+			log.Printf("Cannot insert row of KGS due to the following error\n %s", err)
 		}
 
 		return
