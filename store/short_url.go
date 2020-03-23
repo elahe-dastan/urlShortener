@@ -32,7 +32,7 @@ func (url ShortURL) Save() {
 		"is_used boolean NOT NULL" +
 		");")
 	if err != nil {
-		log.Fatal("Cannot create map table due to the following error", err.Error())
+		log.Println("Cannot create short url table due to the following error", err.Error())
 	}
 
 	generator.Generate(url.DB, url.Length)
@@ -52,8 +52,8 @@ func (url ShortURL) Choose() string {
 		"(SELECT url FROM short_url WHERE is_used = $2 LIMIT 1 FOR UPDATE) "+
 		"RETURNING *;", true, false).Scan(&selectedURL.URL, &selectedURL.IsUsed)
 	if err != nil {
-		log.Fatal(err)
-	} //O(lgn)
+		log.Println("Cannot select row from short url table due to the following error\n %s", err)
+	}
 
 	return selectedURL.URL
 }
@@ -62,14 +62,12 @@ func (url ShortURL) Unique(shortURL string) bool {
 	var s model.ShortURL
 	err := url.DB.QueryRow("UPDATE short_url SET is_used = $1 WHERE url = $2 AND is_used = $3",
 		true, shortURL, false).Scan(s.URL, s.IsUsed)
+
 	if err == nil {
 		return true
 	}
 
 	_, err = url.DB.Exec("INSERT into short_url VALUES ($1, true )", shortURL)
-	if err == nil {
-		return true
-	}
 
-	return false
+	return err == nil
 }

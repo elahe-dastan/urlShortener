@@ -17,7 +17,6 @@ type Map struct {
 func (r Map) Validate() bool {
 	err := validation.ValidateStruct(&r,
 		validation.Field(&r.LongURL, validation.Required, is.URL))
-	//_, err := url.ParseRequestURI(r.LongURL)
 
 	return err == nil
 }

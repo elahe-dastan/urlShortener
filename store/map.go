@@ -36,7 +36,7 @@ func (m Map) Create() {
 		"expiration_time TIMESTAMP NOT NULL" +
 		");")
 	if err != nil {
-		log.Fatal("Cannot create map table due to the following error", err.Error())
+		log.Println("Cannot create map table due to the following error", err.Error())
 	}
 
 	_, err = m.DB.Exec("create or replace function delete_expired_row() " +
@@ -55,7 +55,7 @@ func (m Map) Create() {
 		"execute procedure delete_expired_row();")
 
 	if err != nil {
-		log.Fatal("Cannot create put trigger on map table due to the following error", err.Error())
+		log.Println("Cannot create put trigger on map table due to the following error", err.Error())
 	}
 
 	_, err = m.DB.Exec("create or replace function give_back_url() " +
@@ -74,7 +74,7 @@ func (m Map) Create() {
 		"execute procedure give_back_url();")
 
 	if err != nil {
-		log.Fatal("Cannot create put trigger on map table due to the following error", err.Error())
+		log.Println("Cannot create put trigger on map table due to the following error", err.Error())
 	}
 }
 
@@ -95,7 +95,7 @@ func (m Map) Retrieve(url string) (model.Map, error) {
 	err := m.DB.QueryRow("SELECT * from map WHERE short_url = $1;", url).Scan(
 		&mapping.ID, &mapping.LongURL, &mapping.ShortURL, &mapping.ExpirationTime)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	if mapping.LongURL == "" {

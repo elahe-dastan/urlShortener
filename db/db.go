@@ -13,7 +13,7 @@ const DB = "postgres"
 func New(config config.Database) *sql.DB {
 	db, err := sql.Open(DB, config.Cstring())
 	if err != nil {
-		log.Fatalf("can not open connection to database due to the following err\n: %s", err)
+		log.Println("can not open connection to database due to the following err\n: %s", err)
 	}
 
 	return db

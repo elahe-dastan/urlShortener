@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -87,9 +86,9 @@ func (a API) customShortURL(newMap request.Map) bool {
 
 func (a API) Redirect(c echo.Context) error {
 	shortURL := c.Param("shortURL")
-	//if !a.CheckShortURL(shortURL) {
-	//	return echo.NewHTTPError(http.StatusBadRequest, shortURL)
-	//}
+	if !CheckShortURL(shortURL) {
+		return echo.NewHTTPError(http.StatusBadRequest, shortURL)
+	}
 
 	mapping, err := a.Map.Retrieve(shortURL)
 
@@ -100,16 +99,7 @@ func (a API) Redirect(c echo.Context) error {
 	return echo.NewHTTPError(http.StatusFound, mapping.LongURL)
 }
 
-func (a API) CheckShortURL(shortURL string) bool {
-	fmt.Println("short url length")
-	fmt.Println(len(shortURL))
-	fmt.Println("cpnfig length")
-	fmt.Println(a.ShortURL.Length)
-	//check the length of shortURL
-	if len(shortURL) != a.ShortURL.Length {
-		return false
-	}
-
+func CheckShortURL(shortURL string) bool {
 	match, _ := regexp.MatchString("^[a-zA-Z]+$", shortURL)
 
 	return match
