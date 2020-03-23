@@ -39,7 +39,7 @@ func (m Map) Create() {
 		log.Fatal("Cannot create map table due to the following error", err.Error())
 	}
 
-	m.DB.Exec("create or replace function delete_expired_row() " +
+	_, err = m.DB.Exec("create or replace function delete_expired_row() " +
 		"returns trigger as " +
 		"$BODY$ " +
 		"begin " +
@@ -54,7 +54,11 @@ func (m Map) Create() {
 		"for each row " +
 		"execute procedure delete_expired_row();")
 
-	m.DB.Exec("create or replace function give_back_url() " +
+	if err != nil {
+		log.Fatal("Cannot create put trigger on map table due to the following error", err.Error())
+	}
+
+	_, err = m.DB.Exec("create or replace function give_back_url() " +
 		"returns trigger as " +
 		"$BODY$ " +
 		"begin " +
@@ -68,11 +72,16 @@ func (m Map) Create() {
 		"on map " +
 		"for each row " +
 		"execute procedure give_back_url();")
+
+	if err != nil {
+		log.Fatal("Cannot create put trigger on map table due to the following error", err.Error())
+	}
 }
 
 // Inserts a Map model in the database
 func (m Map) Insert(urlMap model.Map) error {
-	_, err := m.DB.Exec("INSERT INTO map (long_url, short_url, expiration_time) VALUES ($1, $2, $3)", urlMap.LongURL, urlMap.ShortURL, urlMap.ExpirationTime)
+	_, err := m.DB.Exec("INSERT INTO map (long_url, short_url, expiration_time) VALUES ($1, $2, $3)",
+		urlMap.LongURL, urlMap.ShortURL, urlMap.ExpirationTime)
 	m.Counter.Inc()
 
 	return err
@@ -82,7 +91,8 @@ func (m Map) Insert(urlMap model.Map) error {
 func (m Map) Retrieve(url string) (model.Map, error) {
 	var mapping model.Map
 
-	m.DB.QueryRow("SELECT * from map WHERE short_url = $1;", url).Scan(&mapping.ID, &mapping.LongURL, &mapping.ShortURL, &mapping.ExpirationTime) //O(lgn)
+	m.DB.QueryRow("SELECT * from map WHERE short_url = $1;", url).Scan(
+		&mapping.ID, &mapping.LongURL, &mapping.ShortURL, &mapping.ExpirationTime) //O(lgn)
 
 	var err error
 	if mapping.LongURL == "" {

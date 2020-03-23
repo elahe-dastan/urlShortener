@@ -1,6 +1,7 @@
 package store
 
 import (
+	"log"
 	"testing"
 	"time"
 
@@ -30,7 +31,10 @@ func TestMapInteraction(t *testing.T) {
 		ExpirationTime: time.Date(2021, 03, 19, 15, 10, 15, 34, time.UTC),
 	}
 
-	m.DB.Exec("DELETE FROM maps WHERE long_url = $1", s.LongURL)
+	_, err := m.DB.Exec("DELETE FROM maps WHERE long_url = $1", s.LongURL)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	assert.Nil(t, m.Insert(s), "Insert is not done properly")
 
@@ -51,7 +55,10 @@ func TestSameShortURL(t *testing.T) {
 		ExpirationTime: time.Date(2021, 03, 19, 15, 10, 15, 34, time.UTC),
 	}
 
-	m.DB.Exec("DELETE FROM maps WHERE short_url = $1", s.ShortURL)
+	_, err := m.DB.Exec("DELETE FROM maps WHERE short_url = $1", s.ShortURL)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	assert.Nil(t, m.Insert(s), "Cannot insert to database")
 

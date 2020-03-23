@@ -3,13 +3,17 @@ package generator
 import (
 	"database/sql"
 	"fmt"
+	"log"
 )
 
 const source = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 func generateURLsRec(prefix string, k int, db *sql.DB) {
 	if k == 0 {
-		db.Exec("INSERT INTO short_url VALUES ($1, $2)", prefix, false)
+		_, err := db.Exec("INSERT INTO short_url VALUES ($1, $2)", prefix, false)
+		if err != nil {
+			log.Fatal(err)
+		}
 		return
 	}
 

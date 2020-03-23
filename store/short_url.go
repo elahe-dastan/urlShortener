@@ -48,9 +48,12 @@ func (url ShortURL) Choose() string {
 		url.Histogram.Observe(duration.Seconds())
 	}()
 
-	url.DB.QueryRow("UPDATE short_url SET is_used = $1 WHERE url = "+
+	err := url.DB.QueryRow("UPDATE short_url SET is_used = $1 WHERE url = "+
 		"(SELECT url FROM short_url WHERE is_used = $2 LIMIT 1 FOR UPDATE) "+
-		"RETURNING *;", true, false).Scan(&selectedURL.URL, &selectedURL.IsUsed) //O(lgn)
+		"RETURNING *;", true, false).Scan(&selectedURL.URL, &selectedURL.IsUsed)
+	if err != nil {
+		log.Fatal(err)
+	} //O(lgn)
 
 	return selectedURL.URL
 }
