@@ -17,7 +17,7 @@ func TestChoose(t *testing.T) {
 	u := NewShortURL(db.New(config.Read().Database))
 	result := u.Choose()
 
-	u.DB.Raw("SELECT * FROM short_urls WHERE url = ?", result).Scan(&url) //O(lgn)
+	u.DB.QueryRow("SELECT * FROM short_urls WHERE url = $1", result).Scan(&url) //O(lgn)
 
 	assert.True(t, url.IsUsed, "After choosing a short URL it's is_used doesn't change properly")
 }
@@ -30,7 +30,7 @@ func TestMapInteraction(t *testing.T) {
 		ExpirationTime: time.Date(2021, 03, 19, 15, 10, 15, 34, time.UTC),
 	}
 
-	m.DB.Exec("DELETE FROM maps WHERE long_url = ?", s.LongURL)
+	m.DB.Exec("DELETE FROM maps WHERE long_url = $1", s.LongURL)
 
 	assert.Nil(t, m.Insert(s), "Insert is not done properly")
 
@@ -51,7 +51,7 @@ func TestSameShortURL(t *testing.T) {
 		ExpirationTime: time.Date(2021, 03, 19, 15, 10, 15, 34, time.UTC),
 	}
 
-	m.DB.Exec("DELETE FROM maps WHERE short_url = ?", s.ShortURL)
+	m.DB.Exec("DELETE FROM maps WHERE short_url = $1", s.ShortURL)
 
 	assert.Nil(t, m.Insert(s), "Cannot insert to database")
 

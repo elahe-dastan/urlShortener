@@ -3,8 +3,8 @@ package model
 import "time"
 
 type Map struct {
-	ID             int    `gorm:"primary_key"`
-	LongURL        string `gorm:"not null"`
-	ShortURL       string `gorm:"unique;not null"`
+	ID             int
+	LongURL        string
+	ShortURL       string
 	ExpirationTime time.Time
 }

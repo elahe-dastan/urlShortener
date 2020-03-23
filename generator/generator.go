@@ -1,17 +1,15 @@
 package generator
 
 import (
+	"database/sql"
 	"fmt"
-
-	"github.com/elahe-dastan/urlShortener/model"
-	"github.com/jinzhu/gorm"
 )
 
 const source = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-func generateURLsRec(prefix string, k int, db *gorm.DB) {
+func generateURLsRec(prefix string, k int, db *sql.DB) {
 	if k == 0 {
-		db.Create(&model.ShortURL{URL: prefix, IsUsed: false})
+		db.Exec("INSERT INTO short_url VALUES ($1, $2)", prefix, false)
 		return
 	}
 
@@ -23,7 +21,7 @@ func generateURLsRec(prefix string, k int, db *gorm.DB) {
 	}
 }
 
-func Generate(db *gorm.DB, l int) {
+func Generate(db *sql.DB, l int) {
 	fmt.Println("Length of short URL")
 	fmt.Println(l)
 	generateURLsRec("", l, db)
