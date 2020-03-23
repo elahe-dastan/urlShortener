@@ -18,7 +18,7 @@ func TestChoose(t *testing.T) {
 	u := NewShortURL(db.New(config.Read().Database))
 	result := u.Choose()
 
-	err := u.DB.QueryRow("SELECT * FROM short_urls WHERE url = $1", result).Scan(&url)
+	err := u.DB.QueryRow("SELECT * FROM short_url WHERE url = $1", result).Scan(&url)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -34,7 +34,7 @@ func TestMapInteraction(t *testing.T) {
 		ExpirationTime: time.Date(2021, 03, 19, 15, 10, 15, 34, time.UTC),
 	}
 
-	_, err := m.DB.Exec("DELETE FROM maps WHERE long_url = $1", s.LongURL)
+	_, err := m.DB.Exec("DELETE FROM map WHERE long_url = $1", s.LongURL)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -58,7 +58,7 @@ func TestSameShortURL(t *testing.T) {
 		ExpirationTime: time.Date(2021, 03, 19, 15, 10, 15, 34, time.UTC),
 	}
 
-	_, err := m.DB.Exec("DELETE FROM maps WHERE short_url = $1", s.ShortURL)
+	_, err := m.DB.Exec("DELETE FROM map WHERE short_url = $1", s.ShortURL)
 	if err != nil {
 		log.Fatal(err)
 	}
