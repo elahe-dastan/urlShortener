@@ -19,7 +19,7 @@ func Register(root *cobra.Command, cfg config.Config) {
 			d := db.New(cfg.Database)
 			m := store.NewMap(d)
 			l, _ := cmd.Flags().GetInt("length")
-			u := store.ShortURL{
+			u := store.SQLShortURL{
 				DB:     d,
 				Length: l,
 			}

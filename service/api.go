@@ -16,7 +16,7 @@ import (
 )
 
 type API struct {
-	Map      store.Mapping
+	Map      store.Map
 	ShortURL store.ShortURL
 }
 
@@ -96,7 +96,7 @@ func (a API) Redirect(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, shortURL)
 	}
 
-	return echo.NewHTTPError(http.StatusFound, mapping.LongURL)
+	return c.JSON(http.StatusFound, mapping.LongURL)
 }
 
 func CheckShortURL(shortURL string) bool {

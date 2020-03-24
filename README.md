@@ -8,7 +8,7 @@ Simple project created with golang and postgres
 
 The aim of the project is to map each long URL given to it to a short URL. After the mapping each short URL
 will be redirected to the original URL.
-The short URL can be custom or not, if not a key generation service (KGS) is used to assign a random 
+The short URL can be custom or not, if not, a key generation service (KGS) is used to assign a random 
 short URL to the given long URL.
 
 ## Installation
@@ -21,18 +21,23 @@ Viper library to manage configuration
 $ go get github.com/spf13/viper
 ```
 
-Gorm library to interact with database
-
-```sh
-$ go get -u github.com/jinzhu/gorm
-```
-
 Cobra library to add CLI
 
 ```sh
 $ go get -u github.com/spf13/cobra/cobra
 ```
 
+Prometheus to monitor the project
+
+```sh
+$ go get github.com/prometheus/client_golang/prometheus
+```
+
+Echo to handle HTTP requests
+
+```sh
+$ go get github.com/labstack/echo/v4
+```
 ## Run
 
 ```sh
@@ -42,8 +47,10 @@ We need to create tables and run KGS only once so there is no need to run the co
 you want to run the project
 
 ```sh
-$ go run main.go setupdb
+$ go run main.go setupdb -l length of short url
 ```
+The flag "-l" specifies the length of the short URLs which you want the KGS to produce
+
 This command runs the APIs
 
 ```sh
@@ -94,44 +101,44 @@ Statistics        Avg      Stdev        Max
 For a small API documentation check this URL:
 https://app.swaggerhub.com/apis/elahe.dstn/urlshortener/1.0.0
 
-Different ideas to build a URL shortener
+## Why this idea?
 I have thought about four possible ideas to build a URL shortener that will be discussed below
 
-1. Generating a random short URL while inserting :
+1. Generating a random short URL while inserting :<br/>
 This approach is the easiest one in which every time the user posts a long URL and expects a short URL back
-we can generate a random short URL at that moment and insert to the database
+we can generate a random short URL at that moment and insert it to the database.
 
-Advantages:
+Advantages:<br/>
 Super easy to write the code 
 
-Disadvantages: 
-1- Time is taken to produce a random short URL 
-2- The short URL generated may be duplicate that returns error while inserting to the database so should be 
+Disadvantages:<br/>
+1- Time is taken to produce a random short URL<br/> 
+2- The short URL generated may be a duplication that returns error while inserting to the database so should be 
 regenerated and infects the performance
 
-My time complexity estimation:
-Generating short URL = O(length of url)
-Inserting to database = O(log size of database) : short URL should be unique and generating it randomly can lead to a duplication 
+Time complexity estimation:<br/>
+Generating short URL = O(length of url) <br/>
+Inserting to the database = O(log size of database) : short URL should be unique and generating it randomly can lead to a duplication 
 so we have to put a unique constraint on short URL
 
-My database size estimation:
-We need only one table that has two columns :
+Database size estimation:<br/>
+We need only one table that has two columns :<br/>
 short URL as primary key and long url that matches it
 
-2. Encoding actual URL :
-There are hash functions like MD% or SHA256 that we can use to generate the short URL of a long one ,this 
+2. Encoding actual URL :<br/>
+There are hash functions like MD5 or SHA256 that we can use to generate the short URL of a long one ,this 
 functions produce a long output so we can consider just a part of it as the short URL
 
-Disadvantages:
+Disadvantages:<br/>
 I think the most noticeable disadvantage of this approach is collision, we know that two long URL may have the
 same short URL using this way
 
-My time complexity estimation:
+Time complexity estimation:<br/>
 Generating short URL = O(1)
 Inserting to database = O(log size of database) : short URL should be unique and generating it by hash functions can lead to a 
 duplication so we have to put a unique constraint on short URL
 
-My database size estimation:
+My database size estimation:<br/>
 We need only one table that has two columns :
 short URL as primary key and long url that matches it
 

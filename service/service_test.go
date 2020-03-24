@@ -22,7 +22,8 @@ func TestInvalidCharacterInShortURL(t *testing.T) {
 
 func TestDBInteraction(t *testing.T) {
 	a := API{
-		Map: mock.Map{Maps: map[string]string{}},
+		Map:      mock.Map{Maps: map[string]string{}},
+		ShortURL: mock.ShortURL{ShortURLs: map[string]bool{"ahs": false}},
 	}
 
 	mapJSON := `{"LongURL":"https://www.geeksforgeeks.org",

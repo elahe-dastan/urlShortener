@@ -8,6 +8,10 @@ type Map struct {
 	Maps map[string]string
 }
 
+type ShortURL struct {
+	ShortURLs map[string]bool
+}
+
 func (m Map) Insert(urlMap model.Map) error {
 	m.Maps[urlMap.ShortURL] = urlMap.LongURL
 
@@ -24,4 +28,16 @@ func (m Map) Retrieve(url string) (model.Map, error) {
 	}
 
 	return mapping, nil
+}
+
+func (s ShortURL) Unique(shortURL string) bool {
+	return s.ShortURLs[shortURL] == false
+}
+
+func (s ShortURL) Save() {
+
+}
+
+func (s ShortURL) Choose() string {
+	return "something"
 }

@@ -10,25 +10,25 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
-type Mapping interface {
+type Map interface {
 	Insert(urlMap model.Map) error
 	Retrieve(url string) (model.Map, error)
 }
 
-type Map struct {
+type SQLMap struct {
 	DB      *sql.DB
 	Counter prometheus.Counter
 }
 
-func NewMap(d *sql.DB) Map {
-	return Map{DB: d,
+func NewMap(d *sql.DB) SQLMap {
+	return SQLMap{DB: d,
 		Counter: metric.NewCounter("number_of_requests"),
 	}
 }
 
 // Creates a table in the database that matches the Map table and puts a trigger on it which deletes the
 // rows that have expired after each insert
-func (m Map) Create() {
+func (m SQLMap) Create() {
 	_, err := m.DB.Exec("CREATE TABLE IF NOT EXISTS map (" +
 		"id serial PRIMARY KEY," +
 		"long_url VARCHAR NOT NULL," +
@@ -79,7 +79,7 @@ func (m Map) Create() {
 }
 
 // Inserts a Map model in the database
-func (m Map) Insert(urlMap model.Map) error {
+func (m SQLMap) Insert(urlMap model.Map) error {
 	_, err := m.DB.Exec("INSERT INTO map (long_url, short_url, expiration_time) VALUES ($1, $2, $3)",
 		urlMap.LongURL, urlMap.ShortURL, urlMap.ExpirationTime)
 
@@ -89,7 +89,7 @@ func (m Map) Insert(urlMap model.Map) error {
 }
 
 // Gets a short url as parameter and returns a Map model
-func (m Map) Retrieve(url string) (model.Map, error) {
+func (m SQLMap) Retrieve(url string) (model.Map, error) {
 	var mapping model.Map
 
 	err := m.DB.QueryRow("SELECT * from map WHERE short_url = $1;", url).Scan(
