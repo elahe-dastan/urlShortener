@@ -10,6 +10,8 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
+var ErrNotFound = errors.New("this short URL doesn't exist in the database")
+
 type Map interface {
 	Insert(urlMap model.Map) error
 	Retrieve(url string) (model.Map, error)
@@ -99,7 +101,7 @@ func (m SQLMap) Retrieve(url string) (model.Map, error) {
 	}
 
 	if mapping.LongURL == "" {
-		err = errors.New("this short URL doesn't exist in the database")
+		err = ErrNotFound
 	}
 
 	return mapping, err
