@@ -7,7 +7,6 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/elahe-dastan/urlShortener/config"
 	"github.com/elahe-dastan/urlShortener/metric"
 	"github.com/elahe-dastan/urlShortener/request"
 	"github.com/elahe-dastan/urlShortener/store"
@@ -20,7 +19,7 @@ type API struct {
 	ShortURL store.ShortURL
 }
 
-func (a API) Run(cfg config.LogFile) {
+func (a API) Run() {
 	e := echo.New()
 	e.POST("/urls", a.Mapping)
 	e.GET("/redirect/:shortURL", a.Redirect)
@@ -29,9 +28,7 @@ func (a API) Run(cfg config.LogFile) {
 		metric.Monitor()
 	}()
 
-	f, _ := os.OpenFile(cfg.Address, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-
-	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{Output: f}))
+	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{Output: os.Stderr}))
 	e.Logger.Fatal(e.Start(":8080"))
 }
 

@@ -31,7 +31,7 @@ func (m Map) Retrieve(url string) (model.Map, error) {
 }
 
 func (s ShortURL) Unique(shortURL string) bool {
-	return s.ShortURLs[shortURL] == false
+	return !s.ShortURLs[shortURL]
 }
 
 func (s ShortURL) Save() {

@@ -11,7 +11,6 @@ import (
 
 type Config struct {
 	Database Database `mapstructure:"db"`
-	Log      LogFile  `mapstructure:"log"`
 }
 
 type Database struct {
@@ -21,10 +20,6 @@ type Database struct {
 	DBName   string `mapstructure:"dbname"`
 	Password string `mapstructure:"password"`
 	SSLmode  string `mapstructure:"sslmode"`
-}
-
-type LogFile struct {
-	Address string `mapstructure:"address"`
 }
 
 func Read() Config {

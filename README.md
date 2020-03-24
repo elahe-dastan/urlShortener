@@ -134,53 +134,55 @@ I think the most noticeable disadvantage of this approach is collision, we know 
 same short URL using this way
 
 Time complexity estimation:<br/>
-Generating short URL = O(1)
+Generating short URL = O(1)<br/>
 Inserting to database = O(log size of database) : short URL should be unique and generating it by hash functions can lead to a 
 duplication so we have to put a unique constraint on short URL
 
-My database size estimation:<br/>
-We need only one table that has two columns :
+Database size estimation:<br/>
+We need only one table that has two columns :<br/>
 short URL as primary key and long url that matches it
 
-3. Base conversion:
-This approach has the most light weight database because we don't save the short URL at all when we insert a 
+3. Base conversion:<br/>
+This approach has the most light weight database because we don't save the short URL at all.<br/> When we insert a 
 long URL we get it's ID back and based on the number of characters we want to use in our short URL we can
-convert this ID to a short URL and when searching for a short URL we should first convert it to ID 
+convert this ID to a short URL and when searching for a short URL we should first convert it to it's ID. 
 
 Disadvantage:
-The base Conversion takes time for both inserting and redirecting operation
+The base Conversion takes time for both inserting and redirecting operation.
 
-PM: I have a small implementation for this idea in c#, here is the link:
+PS: I have a small implementation for this idea in c#, here is the link:<br/>
 https://github.com/elahe-dastan/urlshortener_alibaba
 
-My time complexity estimation:
-Generating short URL = O(ID/base)
-Inserting to database = O(1) : 
+Time complexity estimation:<br/>
+Generating short URL = O(ID/base)<br/>
+Inserting to database = O(1)
 
-My database size estimation:
-We need only one table that has two columns :
+Database size estimation:<br/>
+We need only one table that has two columns :<br/>
 ID as primary key and long url that matches it
 
-4. Generating keys offline:
-In this approach we generate all the possible short URLs with a specified length and keep them in a table
-with a boolean column that shows if we have used a short URL or not every time we want to insert a long URL 
-we can pick up on the unused short URLs from this table 
+4. Generating keys offline:<br/>
+In this approach we generate all the possible short URLs with a specified length beforehand and keep them in a table
+with a boolean column that shows if the short URL has been used or not, every time we want to insert a long URL 
+we can pick up on the unused short URLs from this table. 
 
-Advantages: No time is taken to generate a short URL
+Advantages:<br/> 
+No time is taken to generate a short URL
 
-Disadvantage: Operation with database to pick up a short URL takes time
+Disadvantages:<br/>
+Operation with database to pick up a short URL takes time
 
-My time complexity estimation:
-For custom short URLs:
-Checking short URL duplication = O(log size of KGS)
+####Time complexity estimation: <br/>
+<b>For custom short URLs:</b><br/>
+Checking short URL duplication = O(2log size of KGS)<br/>
+Inserting to database = O(1)<br/>
+<b>For others:</b><br/>
+Retrieving a short URL = O(used short URLs)<br/>
 Inserting to database = O(1) : 
-For others:
-Retrieving a short URL = O(used short URLs)
-Inserting to database = O(1) : 
 
-My database size estimation:
+Database size estimation:<br/>
 We need two tables:
 1. To store the KGS that has two columns :
 Short URL and a column that shows if the short URL has been used or not
 2. To store the short URL and the long one which it points to that has three columns:
-ID as primary key, short URL and long URL that matches it
+ID as primary key, short URL and the long URL that matches it

@@ -8,6 +8,4 @@ db:
   dbname: koochooloo
   password: postgres
   sslmode: disable
-log:
-  address: /home/raha/Documents/log.txt
 `
