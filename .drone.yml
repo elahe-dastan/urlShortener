@@ -1,0 +1,40 @@
+kind: pipeline
+name: default
+
+type: docker
+steps:
+  - name: lint
+    image: golangci/golangci-lint
+    commands:
+      - golangci-lint run --enable-all
+  - name: migration
+    image: golang
+    commands:
+      - go run main.go setupdb -l 3
+    environment:
+      URLSHORTENER_DB_HOST: "database"
+  - name: test
+    image: golang
+    commands:
+      - go test -v ./...
+    environment:
+      URLSHORTENER_DB_HOST: "database"
+  - name: docker
+    image: plugins/docker
+    settings:
+      username: rahaalvani
+      password:
+        from_secret: docker_password
+      repo: rahaalvani/urlshortener
+      dockerfile: ./Dockerfile
+    when:
+      branch:
+      - master
+
+services:
+  - name: database
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: koochooloo
