@@ -94,6 +94,7 @@ func (a API) Redirect(c echo.Context) error {
 		if errors.Is(err, store.ErrNotFound) {
 			return echo.NewHTTPError(http.StatusNotFound, shortURL)
 		}
+
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
