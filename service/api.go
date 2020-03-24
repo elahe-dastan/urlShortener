@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"log"
 	"net/http"
 	"os"
@@ -90,7 +91,10 @@ func (a API) Redirect(c echo.Context) error {
 	mapping, err := a.Map.Retrieve(shortURL)
 
 	if err != nil {
-		return echo.NewHTTPError(http.StatusNotFound, shortURL)
+		if errors.Is(err, store.ErrNotFound) {
+			return echo.NewHTTPError(http.StatusNotFound, shortURL)
+		}
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
 	return c.JSON(http.StatusFound, mapping.LongURL)
